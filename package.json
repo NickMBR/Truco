@@ -1,0 +1,33 @@
+{
+	"name": "truco-nm",
+	"version": "0.0.1",
+	"private": true,
+	"author": "Nicolas Mello <nicolasmello@gmail.com> (https://niko.works)",
+	"scripts": {
+		"serve": "vue-cli-service serve",
+		"build": "vue-cli-service build",
+		"lint": "vue-cli-service lint"
+	},
+	"dependencies": {
+		"@mdi/font": "^3.5.95",
+		"localforage": "^1.7.3"
+		"register-service-worker": "^1.6.0",
+		"typeface-roboto": "0.0.54",
+		"vue": "^2.6.4",
+		"vue-i18n": "^8.9.0",
+		"vue-router": "^3.0.2",
+		"vuetify": "^2.1.12",
+		"vuex": "^3.1.0"
+	},
+	"devDependencies": {
+		"@vue/cli-plugin-babel": "^3.4.0",
+		"@vue/cli-plugin-eslint": "^3.4.0",
+		"@vue/cli-plugin-pwa": "^3.4.0",
+		"@vue/cli-service": "^3.4.0",
+		"@vue/eslint-config-standard": "^4.0.0",
+		"babel-plugin-transform-imports": "^1.5.1",
+		"stylus": "^0.54.5",
+		"stylus-loader": "^3.0.2",
+		"vue-template-compiler": "^2.6.4"
+	}
+}

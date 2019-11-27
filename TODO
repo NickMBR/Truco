@@ -1,0 +1,3 @@
+Dates Sync:
+- Update all the activities/moments/locals of the date upon update method since it registers the date within the date.
+- Check if the _id of activities/moments/locals are the same
