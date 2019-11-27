@@ -11,10 +11,6 @@ import Locales from './plugins/locale'
 import Validator from './plugins/core/validator'
 import Utilities from './plugins/core/utils'
 import EventBus from './plugins/core/eventbus'
-import VueApexCharts from 'vue-apexcharts'
-import VueScrollTo from 'vue-scrollto'
-import Croppa from 'vue-croppa'
-import VueTheMask from 'vue-the-mask'
 
 // CSS
 import 'vuetify/dist/vuetify.min.css'
@@ -71,19 +67,6 @@ Vue.use(Utilities, i18n)
 
 // EVENTBUS
 Vue.use(EventBus)
-
-// CHARTS
-Vue.use(VueApexCharts)
-Vue.component('apexchart', VueApexCharts)
-
-// SCROLLING
-Vue.use(VueScrollTo)
-
-// IMAGE
-Vue.use(Croppa)
-
-// MASKING
-Vue.use(VueTheMask)
 
 new Vue({
 	vuetify: new Vuetify(VuetifyOptions),

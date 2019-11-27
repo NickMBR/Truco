@@ -1,2 +1,2 @@
-# SmartDating
-SmartDating
+# Truco
+Partidas e Pontuações de Truco

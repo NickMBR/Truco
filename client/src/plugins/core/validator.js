@@ -33,17 +33,6 @@ export default {
 			}
 		}
 
-		/*
-		const regexOptions = {
-			upper: 'A-Z',
-			lower: 'a-z',
-			spaces: ' ',
-			numeric: '0-9',
-			unicode: '\u00C0-\u00FF',
-			linebreak: '\r|\n'
-		}
-		*/
-
 		Vue.prototype.$rules = methods
 	}
 }

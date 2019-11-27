@@ -1,6 +1,6 @@
 export default {
 	app: {
-		title: 'SmartDating',
+		title: 'Truco',
 		description: 'Personal Dates',
 		slogan: 'My Personal Dates',
 		sloganShort: 'My Dates',

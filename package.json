@@ -10,7 +10,7 @@
 	},
 	"dependencies": {
 		"@mdi/font": "^3.5.95",
-		"localforage": "^1.7.3"
+		"localforage": "^1.7.3",
 		"register-service-worker": "^1.6.0",
 		"typeface-roboto": "0.0.54",
 		"vue": "^2.6.4",
