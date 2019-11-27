@@ -6,50 +6,51 @@
 
 <script>
 import moment from 'moment'
+import SettingsService from './services/settings'
 
 export default {
 	data() {
 		return {
-			routeBlacklist: ['Person']
+			routeBlacklist: []
 		}
 	},
 	created() {
 		this.setTitle()
 	},
 	mounted() {
-		this.setLocalLanguage()
-		this.setLocalTheme()
-		this.setLocalDarkMode()
+		this.getSettings()
 	},
 	methods: {
 		setTitle() {
 			if (!this.routeBlacklist.includes(this.$route.meta.title)) {
 				if (this.$route.meta && this.$route.meta.title) {
-					document.title = 'SmartDating - ' + this.$route.meta.title
+					document.title = 'Truco - ' + this.$route.meta.title
 				}
 				else {
-					document.title = 'SmartDating'
+					document.title = 'Truco'
 				}
 			}
 		},
-		setLocalLanguage() {
-			let localLang = localStorage.getItem('dt-lang') || navigator.language || navigator.userLanguage
+		async getSettings() {
+			let localSettings = await SettingsService.getSettings()
+			if (localSettings && localSettings.version) {
+				if (localSettings.language) {
+					this.$i18n.locale = localSettings.language
+					if (localSettings.language.includes('pt')) {
+						moment.locale('pt')
+					}
+					else {
+						moment.locale(localSettings.language)
+					}
+				}
 
-			if (localLang) {
-				if (localLang.includes('en')) {
-					localStorage.setItem('dt-lang', 'en')
-					this.$i18n.locale = 'en'
-					moment.locale('en')
+				if (!this.$utils.isEmpty(localSettings.darkMode)) {
+					this.$vuetify.theme.dark = localSettings.darkMode
 				}
-				else if (localLang.includes('pt') && localLang.includes('BR')) {
-					localStorage.setItem('dt-lang', 'pt_BR')
-					this.$i18n.locale = 'pt_BR'
-					moment.locale('pt')
+
+				if (!this.$utils.isEmpty(localSettings.theme)) {
+					this.processTheme(localSettings.theme)
 				}
-			}
-			else {
-				localStorage.setItem('dt-lang', 'en')
-				moment.locale('en')
 			}
 		},
 		changeTheme(primary, secondary) {
@@ -59,49 +60,32 @@ export default {
 			this.$vuetify.theme.themes.dark.secondary = secondary
 		},
 		processTheme(theme) {
+			let themeGradient = 'to top, rgba(40,42,46,.4), rgba(24,26,28,.6)'
+
 			if (theme === 'default') {
-				/*
-					this.$vuetify.theme.dark = false
-					PRIMARY: #9554E8
-					SECONDARY: #7743D2
-				*/
-				this.changeTheme('#9554E8', '#7743D2')
-				this.$store.commit('updateThemeGradient', 'to top, rgba(119,67,210,.4), rgba(88,49,156,.6)')
+				if (this.$vuetify.theme.dark) {
+					this.changeTheme('#FFFFFF', '#EDEDED')
+				}
+				else {
+					this.changeTheme('#282A2E', '#181A1C')
+				}
+				themeGradient = 'to top, rgba(40,42,46,.4), rgba(24,26,28,.6)'
 			}
 			else if (theme === 'forest') {
-				/*
-					this.$vuetify.theme.dark = false
-					PRIMARY: #3A955D
-					SECONDARY: #26623D
-				*/
 				this.changeTheme('#3A955D', '#26623D')
-				this.$store.commit('updateThemeGradient', 'to top, rgba(58,149,93,.4), rgba(38,98,61,.6)')
+				themeGradient = 'to top, rgba(58,149,93,.4), rgba(38,98,61,.6)'
 			}
-			else if (theme === 'love') {
-				/*
-					this.$vuetify.theme.dark = false
-					PRIMARY: #D45050
-					SECONDARY: #AD4242
-				*/
+			else if (theme === 'wine') {
 				this.changeTheme('#D45050', '#AD4242')
-				this.$store.commit('updateThemeGradient', 'to top, rgba(212,80,80,.4), rgba(173,66,66,.6)')
+				themeGradient = 'to top, rgba(212,80,80,.4), rgba(173,66,66,.6)'
 			}
-		},
-		setLocalTheme() {
-			let localTheme = localStorage.getItem('dt-theme')
+			else if (theme === 'orchid') {
+				this.changeTheme('#9554E8', '#7743D2')
+				themeGradient = 'to top, rgba(119,67,210,.4), rgba(88,49,156,.6)'
+			}
 
-			if (localTheme) {
-				this.processTheme(localTheme)
-			}
-			else {
-				localStorage.setItem('dt-theme', 'default')
-			}
-		},
-		setLocalDarkMode() {
-			let localDarkMode = localStorage.getItem('dt-dark')
-
-			if (!this.$utils.isEmpty(localDarkMode)) {
-				this.$vuetify.theme.dark = localDarkMode === 'true' || localDarkMode === true
+			if (themeGradient) {
+				this.$store.commit('updateThemeGradient', themeGradient)
 			}
 		}
 	},
@@ -115,8 +99,8 @@ export default {
 
 <style>
 @font-face {
-  font-family: SmartDatingFont;
-  src: url(./assets/fonts/SignPainter-Regular.ttf);
+	font-family: SmartDatingFont;
+	src: url(./assets/fonts/SignPainter-Regular.ttf);
 }
 
 /*body {
@@ -144,20 +128,20 @@ export default {
 	position: relative;
 }
 
-.dt-font {
+.truco-font {
 	font-family: SmartDatingFont;
 }
 
-.dt-font.sz-title-4 {
+.truco-font.sz-title-4 {
 	font-size: 60px;
 }
-.dt-font.sz-title-3 {
+.truco-font.sz-title-3 {
 	font-size: 54px;
 }
-.dt-font.sz-title-2 {
+.truco-font.sz-title-2 {
 	font-size: 48px;
 }
-.dt-font.sz-title-1 {
+.truco-font.sz-title-1 {
 	font-size: 36px;
 }
 </style>

@@ -8,23 +8,35 @@ const router = new Router({
 	mode: 'history',
 	routes: [
 		{
-			path: '/main',
+			path: '/',
 			name: 'Main',
+			redirect: '/home',
 			component: () => import('./views/Main.vue'),
 			children: [
-				/*
 				{
-					path: '/profile',
-					name: 'Profile',
+					path: '/settings',
+					name: 'Settings',
 					meta: {
-						title: 'Profile'
+						title: 'Settings'
 					},
-					component: () => import('./views/navigation/user/Profile.vue'),
-					beforeEnter: (to, from, next) => {
-						authorize(to.path, next)
-					}
+					component: () => import('./views/navigation/Settings.vue')
+				},
+				{
+					path: '/about',
+					name: 'About',
+					meta: {
+						title: 'About'
+					},
+					component: () => import('./views/navigation/About.vue')
+				},
+				{
+					path: '/home',
+					name: 'Home',
+					meta: {
+						title: 'Home'
+					},
+					component: () => import('./views/navigation/Home.vue')
 				}
-				*/
 			]
 		},
 		{

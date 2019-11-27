@@ -1,9 +1,6 @@
 export default {
 	app: {
 		title: 'Truco',
-		description: 'Personal Dates',
-		slogan: 'My Personal Dates',
-		sloganShort: 'My Dates',
 		madeBy: 'Made by'
 	},
 	common: {
@@ -16,23 +13,12 @@ export default {
 		categories: 'Categories',
 		upload: 'Upload',
 		uploads: 'Uploads',
-		activities: 'Activities',
-		topActivities: 'Top Activities',
-		moments: 'Moments',
-		topMoments: 'Top Moments',
 		today: 'Today',
 		emoji: 'Emoji',
 		new: 'New',
 		newO: 'New',
 		contact: 'Contact',
 		since: 'Since',
-		lastDates: 'Last Dates',
-		locals: 'Locals',
-		address: 'Address',
-		addresses: 'Addresses',
-		place: 'Place',
-		places: 'Places',
-		topPlaces: 'Top Places',
 		until: 'Until',
 		details: 'Details',
 		stats: 'Stats'
@@ -41,16 +27,8 @@ export default {
 		home: 'Home',
 		about: 'About',
 		exit: 'Exit',
-		colors: 'Colors',
 		tools: 'Tools',
-		settings: 'Settings',
-		calendar: 'Calendar',
-		date: 'Date',
-		dates: 'Dates',
-		people: 'People'
-	},
-	message: {
-		welcome: 'Welcome!'
+		settings: 'Settings'
 	},
 	actions: {
 		start: 'Start',
@@ -62,22 +40,9 @@ export default {
 		search: 'Search'
 	},
 	forms: {
-		name: 'Name',
-		email: 'Email',
-		password: 'Password',
-		confirmPassword: 'Confirm password',
-		remember: 'Remember credentials?',
-		login: 'Login',
-		register: 'Register',
-		newRecord: 'New Record',
 		language: 'Language',
 		theme: 'Theme',
-		darkMode: 'Dark Mode',
-		whenMeet: 'When did you meet',
-		whenDate: 'When this date happened?',
-		hourDate: 'What was the duration of the date?',
-		selectImage: 'Select an image',
-		selectIcon: 'Select an icon'
+		darkMode: 'Dark Mode'
 	},
 	time: {
 		day: 'Day',
@@ -89,17 +54,12 @@ export default {
 		to: 'to',
 		and: 'and'
 	},
-	setup: {
-		title: 'Hi, welcome to',
-		letsStart: 'Let\'s start?',
-		defineCredentials: 'Define your access account',
-		signUp: 'Sign up'
-	},
 	themes: {
 		default: 'Default',
 		dark: 'Dark',
 		forest: 'Forest',
-		love: 'Love'
+		wine: 'Wine',
+		orchid: 'Orchid'
 	},
 	validations: {
 		required: 'This field is required.',
@@ -120,12 +80,9 @@ export default {
 		}
 	},
 	alerts: {
-		user: {
-			logout: 'Are you sure you want to exit?'
-		},
-		entries: {
-			cancel: 'There are unsaved changed, are you sure you want to cancel?',
-			removal: 'Are you sure you want to delete this record?'
+		test: {
+			button: 'Test Alert',
+			message: 'This is a test alert'
 		}
 	},
 	$vuetify: {

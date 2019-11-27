@@ -1,9 +1,6 @@
 export default {
 	app: {
-		title: 'SmartDating',
-		description: 'Encontros Pessoais',
-		slogan: 'Meus Encontros Pessoais',
-		sloganShort: 'Meus Encontros',
+		title: 'Truco',
 		madeBy: 'Feito por'
 	},
 	common: {
@@ -16,23 +13,12 @@ export default {
 		categories: 'Categorias',
 		upload: 'Importar',
 		uploads: 'Importações',
-		activities: 'Atividades',
-		topActivities: 'Top de Atividades',
-		moments: 'Momentos',
-		topMoments: 'Top de Momentos',
 		today: 'Hoje',
 		emoji: 'Emoji',
 		new: 'Nova',
 		newO: 'Novo',
 		contact: 'Contato',
 		since: 'Desde',
-		lastDates: 'Últimos Encontros',
-		locals: 'Locais',
-		address: 'Endereço',
-		addresses: 'Endereços',
-		place: 'Lugar',
-		places: 'Lugares',
-		topPlaces: 'Top de Lugares',
 		until: 'Até',
 		details: 'Detalhes',
 		stats: 'Estatísticas'
@@ -41,16 +27,8 @@ export default {
 		home: 'Início',
 		about: 'Sobre',
 		exit: 'Sair',
-		colors: 'Cores',
 		tools: 'Ferramentas',
 		settings: 'Configurações',
-		calendar: 'Calendário',
-		date: 'Encontro',
-		dates: 'Encontros',
-		people: 'Pessoas'
-	},
-	message: {
-		welcome: 'Bem Vindo!'
 	},
 	actions: {
 		start: 'Começar',
@@ -62,22 +40,9 @@ export default {
 		search: 'Pesquisar'
 	},
 	forms: {
-		name: 'Nome',
-		email: 'Email',
-		password: 'Senha',
-		confirmPassword: 'Confirme a senha',
-		remember: 'Lembrar credenciais?',
-		login: 'Entrar',
-		register: 'Registrar',
-		newRecord: 'Novo Registro',
 		language: 'Idioma',
 		theme: 'Tema',
-		darkMode: 'Modo Escuro',
-		whenMeet: 'Quando você conheceu',
-		whenDate: 'Quando vocês se encontraram?',
-		hourDate: 'Qual foi a duração do encontro?',
-		selectImage: 'Selecione uma imagem',
-		selectIcon: 'Selecione um ícone'
+		darkMode: 'Modo Escuro'
 	},
 	time: {
 		day: 'Dia',
@@ -89,17 +54,12 @@ export default {
 		to: 'até',
 		and: 'e'
 	},
-	setup: {
-		title: 'Olá, bem vindo ao',
-		letsStart: 'Vamos começar?',
-		defineCredentials: 'Defina sua conta de acesso',
-		signUp: 'Registrar-se'
-	},
 	themes: {
 		default: 'Padrão',
 		dark: 'Escuro',
 		forest: 'Floresta',
-		love: 'Amor'
+		wine: 'Vinho',
+		orchid: 'Orquídea'
 	},
 	validations: {
 		required: 'Esse campo é obrigatório.',
@@ -120,12 +80,9 @@ export default {
 		}
 	},
 	alerts: {
-		user: {
-			logout: 'Tem certeza que deseja sair?'
-		},
-		entries: {
-			cancel: 'Há dados não salvos, tem certeza que deseja cancelar?',
-			removal: 'Tem certeza que deseja remover esse registro?'
+		test: {
+			button: 'Testar Alerta',
+			message: 'Esse é um alerta de testes'
 		}
 	},
 	$vuetify: {

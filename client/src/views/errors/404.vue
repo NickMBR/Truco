@@ -3,7 +3,7 @@
 		<v-container fluid fill-height>
 			<v-layout row wrap>
 				<v-flex xs12 class="pa-12" :class="$vuetify.breakpoint.mdAndUp ? 'pb-6' : ''">
-					<p class="mb-0 font-weight-thin primary--text dt-font" :style="$vuetify.breakpoint.mdAndUp ? 'font-size: 60px;' : 'font-size: 54px;'">
+					<p class="mb-0 font-weight-thin primary--text truco-font" :style="$vuetify.breakpoint.mdAndUp ? 'font-size: 60px;' : 'font-size: 54px;'">
 						<b>{{ $t('app.title') }}</b>
 					</p>
 					<p class="mt-n4 title text-uppercase font-weight-thin primary--text" :style="$vuetify.breakpoint.mdAndUp ? 'letter-spacing: 8px !important;' : 'letter-spacing: 4px !important;'">

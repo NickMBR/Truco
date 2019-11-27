@@ -24,7 +24,6 @@
 </template>
 
 <script>
-// import '../../assets/css/animate.min.css'
 import AlertMessages from '../../plugins/core/alerts'
 
 export default {
@@ -48,20 +47,8 @@ export default {
 			if (val === 'CLOSE_ALERT') {
 				this.reset()
 			}
-			else if (val === 'USER_CONFIRMED_LOGOUT') {
-				this.$store.dispatch('doLogout').then(() => {
-					localStorage.removeItem('token')
-					sessionStorage.removeItem('token')
-					this.$router.push('/')
-					this.reset()
-				})
-			}
-			else if (val === 'REMOVE_RECORD_CONFIRMED') {
-				this.$store.dispatch('setAction', 'REMOVE_RECORD_CONFIRMED')
-				this.reset()
-			}
-			else if (val === 'REGISTER_WINDOW_CLOSE_CONFIRMED') {
-				this.$bus.$emit(val)
+			else if (val === 'CONSOLE_TEST') {
+				this.$store.dispatch('setAction', 'CONSOLE_TEST')
 				this.reset()
 			}
 		},

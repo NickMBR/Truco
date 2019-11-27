@@ -13,38 +13,38 @@ function removeCache(name) {
 				localforage.removeItem(name).then(() => {
 					resolve()
 				}).catch(error => {
-					console.log('removeCache ERROR', name, error)
+					reject(Error('KEY_REMOVE_ERROR: ' + error))
 				})
 			}).catch(error => {
-				console.log('removeCache ERROR', error)
+				reject(Error('CACHE_DRIVER_ERROR: ' + error))
 			})
 		}
 		else {
-			reject(Error('Invalid name or expiration for caching value'))
+			reject(Error('NO_KEY_FOUND_TO_REMOVE'))
 		}
 	})
 }
 
 function setCache(name, value, expireTime) {
 	return new Promise((resolve, reject) => {
-		if (name && expireTime) {
+		if (name && value) {
 			localforage.setDriver([ localforage.INDEXEDDB, localforage.WEBSQL, localforage.LOCALSTORAGE ]).then(() => {
 				let cache = {
 					content: value,
-					expires: (new Date().getTime()) + (60000 * expireTime)
+					expires: expireTime ? (new Date().getTime()) + (60000 * expireTime) : null
 				}
 
 				localforage.setItem(name, cache).then(() => {
 					resolve()
 				}).catch(error => {
-					console.log('setCache ERROR', error)
+					reject(Error('KEY_SET_ERROR: ' + error))
 				})
 			}).catch(error => {
-				console.log('setCache ERROR', error)
+				reject(Error('CACHE_DRIVER_ERROR: ' + error))
 			})
 		}
 		else {
-			reject(Error('Invalid name or expiration for caching value'))
+			reject(Error('KEY_NAME_VALUE_INVALID_TO_SET'))
 		}
 	})
 }
@@ -54,28 +54,35 @@ function getCache(name) {
 		if (name) {
 			localforage.setDriver([ localforage.INDEXEDDB, localforage.WEBSQL, localforage.LOCALSTORAGE ]).then(() => {
 				localforage.getItem(name).then(result => {
-					if (result && result.content && result.expires) {
-						if (checkCacheExpiration(result.expires)) {
-							resolve(result.content)
+					if (result && result.content) {
+						if (result.expires) {
+							if (checkCacheExpiration(result.expires)) {
+								resolve(result.content)
+							}
+							else {
+								localforage.removeItem(name).then(() => {
+									reject(Error('CACHE_IS_EXPIRED'))
+								}).catch(error => {
+									reject(Error('KEY_REMOVE_ON_EXPIRATION_ERROR: ' + error))
+								})
+							}
 						}
 						else {
-							localforage.removeItem(name).then(() => {
-								reject(Error('Cached value is expired'))
-							})
+							resolve(result.content)
 						}
 					}
 					else {
-						reject(Error('Cached value do not exists'))
+						reject(Error('CACHE_DOES_NOT_EXISTS'))
 					}
 				}).catch(error => {
-					console.log('getCache ERROR', error)
+					reject(Error('KEY_GET_ERROR: ' + error))
 				})
 			}).catch(error => {
-				console.log('getCache ERROR', error)
+				reject(Error('CACHE_DRIVER_ERROR: ' + error))
 			})
 		}
 		else {
-			reject(Error('Invalid name for get cached value'))
+			reject(Error('KEY_NAME_VALUE_INVALID_TO_GET'))
 		}
 	})
 }
