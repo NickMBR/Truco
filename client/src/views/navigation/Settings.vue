@@ -1,45 +1,58 @@
 <template>
-	<v-layout row wrap :class="$vuetify.breakpoint.mdAndUp ? 'pa-12' : 'py-6 px-4'">
-		<v-flex xs12>
-			<v-toolbar flat color="transparent">
-				<p class="truco-font sz-title-4 primary--text mt-6">{{ $t('menu.settings') }}</p>
-			</v-toolbar>
-		</v-flex>
+	<v-container fluid class="pa-0">
+		<v-row no-gutters style="height: 100%;">
+			<v-col sm="12" class="pa-5">
+				<v-toolbar flat color="transparent">
+					<p class="truco-font sz-title-4 primary--text mt-6">{{ $t('menu.settings') }}</p>
+				</v-toolbar>
+			</v-col>
 
-		<v-layout row wrap align-center justify-center>
-			<v-flex xs12 sm12 md5 class="mt-4">
-				<v-layout row wrap class="pa-4">
-					<v-flex xs4>
-						<v-subheader>{{ $t('forms.language') }}</v-subheader>
-					</v-flex>
-					<v-flex xs8 class="mb-2">
-						<v-select v-model="language" class="py-0 my-0" :items="languages" item-text="value" solo hide-details return-object single-line menu-props="offsetY"></v-select>
-					</v-flex>
+			<v-col sm="12" class="mt-12">
+				<v-row no-gutters align="center" justify="center">
+					<v-col sm="12" md="6" class="pa-5">
+						<v-row no-gutters>
+							<v-col cols="4">
+								<v-subheader>{{ $t('forms.language') }}</v-subheader>
+							</v-col>
+							<v-col cols="8">
+								<v-select v-model="language" class="py-0 my-0" :items="languages" item-text="value" solo hide-details return-object single-line menu-props="offsetY"></v-select>
+							</v-col>
 
-					<v-flex xs4>
-						<v-subheader>{{ $t('forms.theme') }}</v-subheader>
-					</v-flex>
-					<v-flex xs8>
-						<v-select v-model="theme" class="py-0" :items="themes" solo hide-details return-object single-line menu-props="offsetY">
-							<template v-slot:item="{ item, index }">
-								<span>{{ $t(item.value) }}</span>
-							</template>
-							<template v-slot:selection="{ item, index }">
-								<span>{{ $t(item.value) }}</span>
-							</template>
-						</v-select>
-					</v-flex>
+							<v-col cols="4" class="mt-3">
+								<v-subheader>{{ $t('forms.theme') }}</v-subheader>
+							</v-col>
+							<v-col cols="8" class="mt-3">
+								<v-select v-model="theme" class="py-0" :items="themes" solo hide-details return-object single-line menu-props="offsetY">
+									<template v-slot:item="{ item, index }">
+										<span>{{ $t(item.value) }}</span>
+									</template>
+									<template v-slot:selection="{ item, index }">
+										<span>{{ $t(item.value) }}</span>
+									</template>
+								</v-select>
+							</v-col>
 
-					<v-flex xs4 class="pt-2">
-						<v-subheader>{{ $t('forms.darkMode') }}</v-subheader>
-					</v-flex>
-					<v-flex xs8 class="mb-2">
-						<v-switch color="primary" v-model="darkMode"></v-switch>
-					</v-flex>
-				</v-layout>
-			</v-flex>
-		</v-layout>
-	</v-layout>
+							<v-col cols="4" class="mt-3">
+								<v-subheader>{{ $t('forms.darkMode') }}</v-subheader>
+							</v-col>
+							<v-col cols="8">
+								<v-switch class="pt-2" color="primary" v-model="darkMode"></v-switch>
+							</v-col>
+
+							<v-col cols="4" class="">
+								<v-subheader>{{ $t('alerts.test.button') }}</v-subheader>
+							</v-col>
+							<v-col cols="8" class="">
+								<v-btn color="primary">
+									<v-icon :color="$store.getters.colorMode ? 'grey darken-4' : ''" @click="testAlert()">mdi-alert-outline</v-icon>
+								</v-btn>
+							</v-col>
+						</v-row>
+					</v-col>
+				</v-row>
+			</v-col>
+		</v-row>
+	</v-container>
 </template>
 
 <script>
@@ -162,6 +175,9 @@ export default {
 			}
 
 			this.$store.commit('updateColorMode', { darkMode: this.darkMode, theme: theme })
+		},
+		testAlert() {
+			this.$store.dispatch('setAlert', 'TEST_ALERT')
 		}
 	},
 	watch: {
@@ -191,6 +207,12 @@ export default {
 			}
 
 			this.$store.commit('updateColorMode', { darkMode: this.darkMode, theme: this.theme.id })
+		},
+		'$store.getters.action'() {
+			if (this.$store.getters.action == 'CONSOLE_TEST') {
+				console.log('ALERT ACTION WAS PERFORMED')
+				this.$store.dispatch('setAction', '')
+			}
 		}
 	}
 }

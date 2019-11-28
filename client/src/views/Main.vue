@@ -3,49 +3,43 @@
 		<v-app-bar app clipped-left :color="$vuetify.theme.dark ? '#303030' : 'grey lighten-5'">
 			<v-app-bar-nav-icon @click.stop="setMenu()" class="grey--text text--darken-2"></v-app-bar-nav-icon>
 			<span class="ml-2 mt-1 primary--text truco-font" style="font-size: 36px;">{{ $t('app.title') }}</span>
+			<v-spacer></v-spacer>
+
+			<v-btn fab small color="primary">
+				<v-icon :color="$store.getters.colorMode ? 'grey darken-4' : ''">mdi-plus</v-icon>
+			</v-btn>
 		</v-app-bar>
 
-		<v-navigation-drawer v-model="menu" :mini-variant="mini" app clipped width="220" dark :src="bgPhoto">
+		<v-navigation-drawer app v-model="menu" :mini-variant="mini" clipped width="220" dark :src="bgPhoto">
 			<template v-slot:img="{ src, height }">
 				<v-img v-bind="{ src, height }" :gradient="themeGradient"></v-img>
 			</template>
 			<v-list shaped class="py-0">
-				<template v-for="(item, id) in menuItems">
-					<v-divider v-if="item.divider" :key="'div_' + id"></v-divider>
-					<v-list-item @click="item.path ? changePath(item.path) : item.action ? processAction(item.action) : ''" :key="id">
-						<v-list-item-action><v-icon>{{ item.icon }}</v-icon></v-list-item-action>
-						<v-list-item-content>{{ item.doNotTranslate ? item.title : $t(item.title) }}</v-list-item-content>
-					</v-list-item>
-				</template>
+				<v-list-item-group v-model="menuSelected">
+					<template v-for="(item, id) in menuItems">
+						<v-divider v-if="item.divider" :key="'div_' + id"></v-divider>
+						<v-list-item active-class="" @click="item.path ? changePath(item.path) : item.action ? processAction(item.action) : ''" :key="id">
+							<v-list-item-action><v-icon>{{ item.icon }}</v-icon></v-list-item-action>
+							<v-list-item-content>{{ item.doNotTranslate ? item.title : $t(item.title) }}</v-list-item-content>
+						</v-list-item>
+					</template>
+				</v-list-item-group>
 			</v-list>
 		</v-navigation-drawer>
 
-		<v-content>
+		<!--<v-content>
 			<v-container fluid class="py-0">
 				<v-slide-y-transition mode="out-in">
 					<router-view></router-view>
 				</v-slide-y-transition>
 			</v-container>
+		</v-content>-->
+
+		<v-content>
+			<v-slide-y-transition mode="out-in">
+				<router-view></router-view>
+			</v-slide-y-transition>
 		</v-content>
-
-		<div class="overflow-hidden">
-			<v-bottom-navigation class="ml-12" v-model="active" :input-value="bottomMenu" grow color="primary">
-				<v-btn>
-					<span>Recents</span>
-					<v-icon>mdi-history</v-icon>
-				</v-btn>
-
-				<v-btn>
-					<span>Favorites</span>
-					<v-icon>mdi-heart</v-icon>
-				</v-btn>
-
-				<v-btn>
-					<span>Nearby</span>
-					<v-icon>mdi-map-marker</v-icon>
-				</v-btn>
-			</v-bottom-navigation>
-		</div>
 
 		<dt-alert :message="alertMessage"></dt-alert>
 	</v-app>
@@ -62,8 +56,8 @@ export default {
 	},
 	data() {
 		return {
+			menuSelected: 0,
 			active: 1,
-			bottomMenu: false,
 			bgPhoto: backgroundPicture,
 			menu: null,
 			mini: false,
@@ -94,7 +88,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.showBottomMenu()
+		this.processMenuSelected()
 	},
 	computed: {
 		alert() {
@@ -122,13 +116,12 @@ export default {
 				this.$router.push(path)
 			}
 		},
-		showBottomMenu() {
-			if (this.$route.path === '/home') {
-				this.bottomMenu = true
-			}
-			else {
-				this.bottomMenu = false
-			}
+		processMenuSelected() {
+			this.menuItems.forEach((item, index) => {
+				if (this.$route.path === item.path) {
+					this.menuSelected = index
+				}
+			})
 		}
 	},
 	watch: {
@@ -136,8 +129,7 @@ export default {
 			this.alertMessage = this.$store.getters.alert
 		},
 		'$route.path'() {
-			console.log('PATH CHANGED')
-			this.showBottomMenu()
+			this.processMenuSelected()
 		}
 	}
 }

@@ -1,42 +1,88 @@
 <template>
-	<v-layout row wrap :class="$vuetify.breakpoint.mdAndUp ? 'pa-12' : 'py-6 px-4'">
-		<v-flex xs12>
-			<v-toolbar flat color="transparent">
-				<p class="truco-font sz-title-4 primary--text mt-6">{{ $t('menu.home') }}</p>
-				<v-spacer></v-spacer>
+	<v-container fluid class="pa-0">
+		<v-row no-gutters style="height: 100%;">
+			<v-col sm="12" cols="12" class="pa-5">
+				<v-toolbar flat color="transparent">
+					<p class="truco-font sz-title-4 primary--text mt-6">{{ $t('menu.home') }}</p>
+				</v-toolbar>
 
-				<v-btn fab color="primary">
-					<v-icon :color="$store.getters.colorMode ? 'grey darken-4' : ''" light>mdi-plus</v-icon>
-				</v-btn>
-			</v-toolbar>
-		</v-flex>
+				<v-menu open-on-hover top offset-y>
+					<template v-slot:activator="{ on }">
+						<v-btn fixed bottom v-on="on">
+							<v-icon>mdi-account</v-icon>
+						</v-btn>
+					</template>
 
-		<v-flex xs12 class="mt-6">
-			<v-btn @click="testAlert()">{{ $t('alerts.test.button') }}</v-btn>
-		</v-flex>
-	</v-layout>
+					<v-card class="pa-3">
+						test 1
+					</v-card>
+				</v-menu>
+
+				<v-menu open-on-hover top offset-y>
+					<template v-slot:activator="{ on }">
+						<v-btn fixed bottom right v-on="on">
+							<v-icon>mdi-account</v-icon>
+						</v-btn>
+					</template>
+
+					<v-card class="pa-3">
+						test 1
+					</v-card>
+				</v-menu>
+			</v-col>
+
+			<v-col sm="12" cols="12" class="mt-12">
+				<v-row no-gutters align="center" justify="center">
+					<v-col sm="12" class="pa-5 text-center">
+						<v-row no-gutters>
+							<v-col sm="5" cols="5">
+								<p class="truco-font sz-title-4 text-capitalize">time 1</p>
+								<span class="display-4">0</span>
+							</v-col>
+							<v-col sm="2" cols="2">
+								<v-divider vertical></v-divider>
+							</v-col>
+							<v-col sm="5" cols="5">
+								<p class="truco-font sz-title-4 text-capitalize">time 2</p>
+								<span class="display-4">0</span>
+							</v-col>
+						</v-row>
+					</v-col>
+				</v-row>
+			</v-col>
+		</v-row>
+
+		<!--<v-row no-gutters align="end" style="height: 15%;">
+			<v-col>
+				<div class="overflow-hidden">
+					<v-bottom-navigation v-model="active" :input-value="bottomMenu" grow color="primary">
+						<v-btn>
+							<span>Time 1</span>
+							<v-icon>mdi-account</v-icon>
+						</v-btn>
+
+						<v-btn>
+							<span>Favorites</span>
+							<v-icon>mdi-heart</v-icon>
+						</v-btn>
+
+						<v-btn>
+							<span>Time 2</span>
+							<v-icon>mdi-account</v-icon>
+						</v-btn>
+					</v-bottom-navigation>
+				</div>
+			</v-col>
+		</v-row>-->
+	</v-container>
 </template>
 
 <script>
 export default {
 	data() {
 		return {
-		}
-	},
-	methods: {
-		testAlert() {
-			this.$store.dispatch('setAlert', 'TEST_ALERT')
-		}
-	},
-	watch: {
-		'$store.getters.alert'() {
-			this.alertMessage = this.$store.getters.alert
-		},
-		'$store.getters.action'() {
-			if (this.$store.getters.action == 'CONSOLE_TEST') {
-				console.log('ALERT ACTION WAS PERFORMED')
-				this.$store.dispatch('setAction', '')
-			}
+			active: 1,
+			bottomMenu: true
 		}
 	}
 }

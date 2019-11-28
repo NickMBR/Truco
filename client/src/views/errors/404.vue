@@ -1,8 +1,8 @@
 <template>
 	<v-content>
 		<v-container fluid fill-height>
-			<v-layout row wrap>
-				<v-flex xs12 class="pa-12" :class="$vuetify.breakpoint.mdAndUp ? 'pb-6' : ''">
+			<v-row no-gutters style="height: 100%;">
+				<v-col sm="12" cols="12" class="pa-12">
 					<p class="mb-0 font-weight-thin primary--text truco-font" :style="$vuetify.breakpoint.mdAndUp ? 'font-size: 60px;' : 'font-size: 54px;'">
 						<b>{{ $t('app.title') }}</b>
 					</p>
@@ -17,8 +17,8 @@
 							{{ $t('errors.pages.P404') }}
 						</p>
 					</div>
-				</v-flex>
-			</v-layout>
+				</v-col>
+			</v-row>
 		</v-container>
 	</v-content>
 </template>

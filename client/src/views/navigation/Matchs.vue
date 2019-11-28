@@ -1,24 +1,16 @@
 <template>
-	<div>
-		<v-layout row wrap :class="$vuetify.breakpoint.mdAndUp ? 'pa-12' : 'py-6 px-4'">
-			<v-flex xs12>
+	<v-container fluid class="pa-0">
+		<v-row no-gutters style="height: 100%;">
+			<v-col class="pa-5">
 				<v-toolbar flat color="transparent">
 					<p class="truco-font sz-title-4 primary--text mt-6">{{ $t('menu.matchs') }}</p>
 				</v-toolbar>
-			</v-flex>
-		</v-layout>
-	</div>
+			</v-col>
+		</v-row>
+	</v-container>
 </template>
 
 <script>
 export default {
-	data() {
-		return {
-		}
-	},
-	methods: {
-	},
-	watch: {
-	}
 }
 </script>
