@@ -29,6 +29,7 @@ export default {
 		exit: 'Sair',
 		tools: 'Ferramentas',
 		settings: 'Configurações',
+		matchs: 'Partidas'
 	},
 	actions: {
 		start: 'Começar',

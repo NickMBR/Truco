@@ -28,6 +28,25 @@
 			</v-container>
 		</v-content>
 
+		<div class="overflow-hidden">
+			<v-bottom-navigation class="ml-12" v-model="active" :input-value="bottomMenu" grow color="primary">
+				<v-btn>
+					<span>Recents</span>
+					<v-icon>mdi-history</v-icon>
+				</v-btn>
+
+				<v-btn>
+					<span>Favorites</span>
+					<v-icon>mdi-heart</v-icon>
+				</v-btn>
+
+				<v-btn>
+					<span>Nearby</span>
+					<v-icon>mdi-map-marker</v-icon>
+				</v-btn>
+			</v-bottom-navigation>
+		</div>
+
 		<dt-alert :message="alertMessage"></dt-alert>
 	</v-app>
 </template>
@@ -43,6 +62,8 @@ export default {
 	},
 	data() {
 		return {
+			active: 1,
+			bottomMenu: false,
 			bgPhoto: backgroundPicture,
 			menu: null,
 			mini: false,
@@ -53,6 +74,11 @@ export default {
 					title: 'menu.home',
 					path: '/home',
 					icon: 'mdi-home'
+				},
+				{
+					title: 'menu.matchs',
+					path: '/matchs',
+					icon: 'mdi-cards-playing-outline'
 				},
 				{
 					title: 'menu.settings',
@@ -66,6 +92,9 @@ export default {
 				}
 			]
 		}
+	},
+	mounted() {
+		this.showBottomMenu()
 	},
 	computed: {
 		alert() {
@@ -92,11 +121,23 @@ export default {
 			if (this.$route.path !== path) {
 				this.$router.push(path)
 			}
+		},
+		showBottomMenu() {
+			if (this.$route.path === '/home') {
+				this.bottomMenu = true
+			}
+			else {
+				this.bottomMenu = false
+			}
 		}
 	},
 	watch: {
 		'$store.getters.alert'() {
 			this.alertMessage = this.$store.getters.alert
+		},
+		'$route.path'() {
+			console.log('PATH CHANGED')
+			this.showBottomMenu()
 		}
 	}
 }

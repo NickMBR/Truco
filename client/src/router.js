@@ -14,6 +14,14 @@ const router = new Router({
 			component: () => import('./views/Main.vue'),
 			children: [
 				{
+					path: '/home',
+					name: 'Home',
+					meta: {
+						title: 'Home'
+					},
+					component: () => import('./views/navigation/Home.vue')
+				},
+				{
 					path: '/settings',
 					name: 'Settings',
 					meta: {
@@ -30,12 +38,12 @@ const router = new Router({
 					component: () => import('./views/navigation/About.vue')
 				},
 				{
-					path: '/home',
-					name: 'Home',
+					path: '/matchs',
+					name: 'Matchs',
 					meta: {
-						title: 'Home'
+						title: 'Matchs'
 					},
-					component: () => import('./views/navigation/Home.vue')
+					component: () => import('./views/navigation/Matchs.vue')
 				}
 			]
 		},

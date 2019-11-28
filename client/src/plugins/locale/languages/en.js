@@ -28,7 +28,8 @@ export default {
 		about: 'About',
 		exit: 'Exit',
 		tools: 'Tools',
-		settings: 'Settings'
+		settings: 'Settings',
+		matchs: 'Matchs'
 	},
 	actions: {
 		start: 'Start',
