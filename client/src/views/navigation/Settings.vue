@@ -39,28 +39,6 @@
 				</v-layout>
 			</v-flex>
 		</v-layout>
-
-		<v-flex xs12>
-			<v-divider></v-divider>
-
-			<div class="pa-3">
-				<v-toolbar dense :class="''">
-					<v-toolbar-title>
-						TEST TITLE
-					</v-toolbar-title>
-				</v-toolbar>
-
-				<v-toolbar dense :class="$store.getters.colorMode ? 'primary grey--text text--darken-4' : 'primary white--text'">
-					<v-toolbar-title>
-						TEST TITLE
-					</v-toolbar-title>
-				</v-toolbar>
-
-				<v-btn fab color="primary" class="mt-3">
-					<v-icon :color="$store.getters.colorMode ? 'grey darken-4' : ''" light>mdi-plus</v-icon>
-				</v-btn>
-			</div>
-		</v-flex>
 	</v-layout>
 </template>
 
