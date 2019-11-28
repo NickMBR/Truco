@@ -1,10 +1,8 @@
 import cache from '../plugins/core/cache'
+import coreUtils from '../plugins/core/utils'
 import moment from 'moment'
 
-function isEmpty(data) {
-	return data === null || data === undefined || data === 'undefined' || data === '' || data === ' '
-}
-
+const utils = coreUtils.utilities
 let settingsService = {
 	getSettings() {
 		return new Promise((resolve, reject) => {
@@ -52,7 +50,7 @@ let settingsService = {
 	async updateSettings(data, type) {
 		let settings = await this.getSettings()
 
-		if (settings.version && !isEmpty(data) && type) {
+		if (settings.version && !utils.isEmpty(data) && type) {
 			if (type === 'LANG') {
 				if (data.includes('pt')) {
 					moment.locale('pt')

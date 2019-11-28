@@ -7,6 +7,9 @@ module.exports = {
 		'plugin:vue/essential',
 		'@vue/standard'
 	],
+	plugins: [
+		'vue'
+	],
 	rules: {
 		'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 		'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
@@ -19,7 +22,9 @@ module.exports = {
 		}],
 		'linebreak-style': ['error', (process.platform === 'win32' ? 'windows' : 'unix')],
 		'quotes': ['error', 'single'],
-		'brace-style': ['error', 'stroustrup']
+		'brace-style': ['error', 'stroustrup', {
+			allowSingleLine: true
+		}]
 	},
 	parserOptions: {
 		parser: 'babel-eslint'
