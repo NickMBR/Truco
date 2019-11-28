@@ -2,12 +2,6 @@
 	<v-card flat color="transparent" :class="$vuetify.breakpoint.smAndDown ? 'pa-4' : 'pa-12'">
 		<v-layout row wrap align-center justify-center>
 			<v-flex xs12 sm12 md5 class="mt-4">
-				<v-divider></v-divider>
-
-				<v-btn fab dark color="primary">
-					<v-icon :color="$vuetify.theme.dark ? 'secondary' : ''">mdi-plus</v-icon>
-				</v-btn>
-
 				<v-layout row wrap class="pa-4">
 					<v-flex xs4>
 						<v-subheader>{{ $t('forms.language') }}</v-subheader>

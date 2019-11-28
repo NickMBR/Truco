@@ -16,10 +16,25 @@ let settingsService = {
 					}
 				}).catch(async error => {
 					if (error && error.toString().includes('CACHE_DOES_NOT_EXISTS')) {
+						let localLang = navigator.language || navigator.userLanguage
+						let setLang = 'en'
+
+						if (localLang) {
+							if (localLang.includes('en')) {
+								setLang = 'en'
+							}
+							else if (localLang.includes('pt') && localLang.includes('BR')) {
+								setLang = 'pt_BR'
+							}
+						}
+						else {
+							setLang = 'en'
+						}
+
 						settings = {
 							theme: 'default',
 							darkMode: false,
-							language: 'en',
+							language: setLang,
 							version: '0.0.1',
 							author: 'Nicolas Mello'
 						}

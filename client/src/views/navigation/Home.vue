@@ -5,8 +5,8 @@
 				<p class="truco-font sz-title-4 primary--text mt-6">{{ $t('menu.home') }}</p>
 				<v-spacer></v-spacer>
 
-				<v-btn fab color="primary" @click.stop="selectedData = [], drawer = !drawer">
-					<v-icon color="secondary">mdi-plus</v-icon>
+				<v-btn fab color="primary">
+					<v-icon light>mdi-plus</v-icon>
 				</v-btn>
 			</v-toolbar>
 		</v-flex>
@@ -21,8 +21,6 @@
 export default {
 	data() {
 		return {
-			drawer: false,
-			selectedData: []
 		}
 	},
 	methods: {
