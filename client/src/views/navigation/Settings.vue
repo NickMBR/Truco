@@ -1,5 +1,11 @@
 <template>
-	<v-card flat color="transparent" :class="$vuetify.breakpoint.smAndDown ? 'pa-4' : 'pa-12'">
+	<v-layout row wrap :class="$vuetify.breakpoint.mdAndUp ? 'pa-12' : 'py-6 px-4'">
+		<v-flex xs12>
+			<v-toolbar flat color="transparent">
+				<p class="truco-font sz-title-4 primary--text mt-6">{{ $t('menu.settings') }}</p>
+			</v-toolbar>
+		</v-flex>
+
 		<v-layout row wrap align-center justify-center>
 			<v-flex xs12 sm12 md5 class="mt-4">
 				<v-layout row wrap class="pa-4">
@@ -33,7 +39,29 @@
 				</v-layout>
 			</v-flex>
 		</v-layout>
-	</v-card>
+
+		<v-flex xs12>
+			<v-divider></v-divider>
+
+			<div class="pa-3">
+				<v-toolbar dense :class="''">
+					<v-toolbar-title>
+						TEST TITLE
+					</v-toolbar-title>
+				</v-toolbar>
+
+				<v-toolbar dense :class="$store.getters.colorMode ? 'primary grey--text text--darken-4' : 'primary white--text'">
+					<v-toolbar-title>
+						TEST TITLE
+					</v-toolbar-title>
+				</v-toolbar>
+
+				<v-btn fab color="primary" class="mt-3">
+					<v-icon :color="$store.getters.colorMode ? 'grey darken-4' : ''" light>mdi-plus</v-icon>
+				</v-btn>
+			</div>
+		</v-flex>
+	</v-layout>
 </template>
 
 <script>
@@ -135,6 +163,7 @@ export default {
 				else {
 					this.changeTheme('#282A2E', '#181A1C')
 				}
+
 				themeGradient = 'to top, rgba(40,42,46,.4), rgba(24,26,28,.6)'
 			}
 			else if (theme === 'forest') {
@@ -153,6 +182,8 @@ export default {
 			if (themeGradient) {
 				this.$store.commit('updateThemeGradient', themeGradient)
 			}
+
+			this.$store.commit('updateColorMode', { darkMode: this.darkMode, theme: theme })
 		}
 	},
 	watch: {
@@ -180,6 +211,8 @@ export default {
 					this.changeTheme('#282A2E', '#181A1C')
 				}
 			}
+
+			this.$store.commit('updateColorMode', { darkMode: this.darkMode, theme: this.theme.id })
 		}
 	}
 }

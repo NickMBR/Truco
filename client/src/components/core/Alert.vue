@@ -54,7 +54,12 @@ export default {
 		},
 		alertToolbarColor(type) {
 			if (type === 'DANGER') {
-				return 'primary white--text'
+				if (this.$store.getters.colorMode) {
+					return 'primary grey--text text--darken-4'
+				}
+				else {
+					return 'primary white--text'
+				}
 			}
 			else {
 				return ''

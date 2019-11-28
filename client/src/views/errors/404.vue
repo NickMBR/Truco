@@ -6,9 +6,7 @@
 					<p class="mb-0 font-weight-thin primary--text truco-font" :style="$vuetify.breakpoint.mdAndUp ? 'font-size: 60px;' : 'font-size: 54px;'">
 						<b>{{ $t('app.title') }}</b>
 					</p>
-					<p class="mt-n4 title text-uppercase font-weight-thin primary--text" :style="$vuetify.breakpoint.mdAndUp ? 'letter-spacing: 8px !important;' : 'letter-spacing: 4px !important;'">
-						{{ $t('app.description') }}
-					</p>
+
 					<v-btn icon large color="primary" dark @click="$router.push('/')" class="ml-0 pl-0"><v-icon>mdi-arrow-left</v-icon></v-btn>
 
 					<div class="text-center mt-12">

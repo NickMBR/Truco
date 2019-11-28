@@ -86,9 +86,7 @@ export default {
 			}
 		},
 		processAction(action) {
-			if (action === 'doLogout') {
-				this.$store.dispatch('setAlert', 'CONFIRM_LOGOUT')
-			}
+			console.log('DO SOMETHING WITH', action)
 		},
 		changePath(path) {
 			if (this.$route.path !== path) {

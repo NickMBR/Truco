@@ -27,28 +27,20 @@ const i18n = new VueI18n({
 	messages: Locales
 })
 
-/*
-	VUETIFY CONFIG
-	- DARK RED: #A2191A
-	- LIGHT RED: #C53A3A
-
-	NEW PURPLE:
-	- LIGHT PURPLE: #9554E8
-	- DARK PURPLE: #7743D2
-*/
+// VUETIFY
 Vue.use(Vuetify)
 const VuetifyOptions = {
 	theme: {
 		dark: false,
 		themes: {
 			light: {
-				primary: '#9554E8',
-				secondary: '#7743D2',
+				primary: '#282A2E',
+				secondary: '#181A1C',
 				success: '#5E945A'
 			},
 			dark: {
-				primary: '#9554E8',
-				secondary: '#7743D2',
+				primary: '#282A2E',
+				secondary: '#181A1C',
 				success: '#5E945A'
 			}
 		}

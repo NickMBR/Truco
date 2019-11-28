@@ -6,7 +6,7 @@
 				<v-spacer></v-spacer>
 
 				<v-btn fab color="primary">
-					<v-icon light>mdi-plus</v-icon>
+					<v-icon :color="$store.getters.colorMode ? 'grey darken-4' : ''" light>mdi-plus</v-icon>
 				</v-btn>
 			</v-toolbar>
 		</v-flex>

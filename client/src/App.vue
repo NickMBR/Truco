@@ -87,6 +87,8 @@ export default {
 			if (themeGradient) {
 				this.$store.commit('updateThemeGradient', themeGradient)
 			}
+
+			this.$store.commit('updateColorMode', { darkMode: this.$vuetify.theme.dark, theme: theme })
 		}
 	},
 	watch: {
