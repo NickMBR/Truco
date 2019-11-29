@@ -38,10 +38,12 @@ export default {
 	methods: {
 		closed(v) {
 			this.$store.dispatch('setAlert', '')
+			console.log('ALERT WAS CLOSED')
 		},
 		reset() {
 			this.active = false
 			this.$store.dispatch('setAlert', '')
+			console.log('ALERT WAS RESET')
 		},
 		performAction(val) {
 			if (val === 'CLOSE_ALERT') {
@@ -49,6 +51,14 @@ export default {
 			}
 			else if (val === 'CONSOLE_TEST') {
 				this.$store.dispatch('setAction', 'CONSOLE_TEST')
+				this.reset()
+			}
+			else if (val === 'RESET_MATCH') {
+				this.$store.dispatch('setAction', 'RESET_MATCH')
+				this.reset()
+			}
+			else if (val === 'SAVE_MATCH') {
+				this.$store.dispatch('setAction', 'SAVE_MATCH')
 				this.reset()
 			}
 		},

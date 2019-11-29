@@ -5,8 +5,12 @@
 			<span class="ml-2 mt-1 primary--text truco-font" style="font-size: 36px;">{{ $t('app.title') }}</span>
 			<v-spacer></v-spacer>
 
-			<v-btn fab small color="primary">
-				<v-icon :color="$store.getters.colorMode ? 'grey darken-4' : ''">mdi-plus</v-icon>
+			<v-btn icon color="primary" v-if="$route.path === '/home'">
+				<v-icon @click="$store.dispatch('setAlert', 'RESET_SCORE')" :color="$store.getters.colorMode ? 'grey darken-4' : ''">mdi-history</v-icon>
+			</v-btn>
+
+			<v-btn icon color="primary" v-if="$route.path === '/home'">
+				<v-icon @click="$store.dispatch('setAlert', 'SAVE_MATCH')" :color="$store.getters.colorMode ? 'grey darken-4' : ''">mdi-content-save</v-icon>
 			</v-btn>
 		</v-app-bar>
 

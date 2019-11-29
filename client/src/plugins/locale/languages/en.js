@@ -6,6 +6,7 @@ export default {
 	common: {
 		yes: 'Yes',
 		no: 'No',
+		ok: 'Ok',
 		next: 'Next',
 		back: 'Back',
 		type: 'Type',
@@ -21,7 +22,8 @@ export default {
 		since: 'Since',
 		until: 'Until',
 		details: 'Details',
-		stats: 'Stats'
+		stats: 'Stats',
+		nice: 'Nice!'
 	},
 	menu: {
 		home: 'Home',
@@ -38,7 +40,8 @@ export default {
 		save: 'Save',
 		cancel: 'Cancel',
 		edit: 'Edit',
-		search: 'Search'
+		search: 'Search',
+		confirm: 'Confirm'
 	},
 	forms: {
 		language: 'Language',
@@ -84,6 +87,11 @@ export default {
 		test: {
 			button: 'Test Alert',
 			message: 'This is a test alert'
+		},
+		game: {
+			save: 'Are you sure you want to save this match?',
+			reset: 'Are you sure you want to reset this match?',
+			winner: 'The team § won the match!'
 		}
 	},
 	$vuetify: {

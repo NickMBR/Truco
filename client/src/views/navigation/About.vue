@@ -3,7 +3,7 @@
 		<v-row no-gutters style="height: 100%;">
 			<v-col sm="12" cols="12" class="pa-5">
 				<v-toolbar flat color="transparent">
-					<p class="truco-font sz-title-4 primary--text mt-6">{{ $t('menu.settings') }}</p>
+					<p class="truco-font sz-title-4 primary--text mt-6">{{ $t('menu.about') }}</p>
 				</v-toolbar>
 			</v-col>
 

@@ -6,6 +6,7 @@ export default {
 	common: {
 		yes: 'Sim',
 		no: 'Não',
+		ok: 'Ok',
 		next: 'Próximo',
 		back: 'Voltar',
 		type: 'Tipo',
@@ -21,7 +22,8 @@ export default {
 		since: 'Desde',
 		until: 'Até',
 		details: 'Detalhes',
-		stats: 'Estatísticas'
+		stats: 'Estatísticas',
+		nice: 'Boa!'
 	},
 	menu: {
 		home: 'Início',
@@ -38,7 +40,8 @@ export default {
 		save: 'Salvar',
 		cancel: 'Cancelar',
 		edit: 'Editar',
-		search: 'Pesquisar'
+		search: 'Pesquisar',
+		confirm: 'Confirmar'
 	},
 	forms: {
 		language: 'Idioma',
@@ -84,6 +87,11 @@ export default {
 		test: {
 			button: 'Testar Alerta',
 			message: 'Esse é um alerta de testes'
+		},
+		game: {
+			save: 'Tem certeza que deseja salvar essa partida?',
+			reset: 'Tem certeza que deseja resetar essa partida?',
+			winner: 'O time § venceu a partida!'
 		}
 	},
 	$vuetify: {
