@@ -1,0 +1,7 @@
+- Save temporary score, always.
+- Save match when someone wins
+	- the reset scores
+	- keep scores from team names
+- Allow team name changes
+- Remove save button from the main toolbar
+- Add § translate functionality to alerts
