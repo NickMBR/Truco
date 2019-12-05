@@ -27,6 +27,7 @@ export default {
 	},
 	menu: {
 		home: 'Home',
+		play: 'Play',
 		about: 'About',
 		exit: 'Exit',
 		tools: 'Tools',

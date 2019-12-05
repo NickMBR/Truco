@@ -1,27 +1,39 @@
 const alertModule = {
 	state: {
 		alert: '',
+		alertContent: '',
 		action: ''
 	},
 	actions: {
-		setAlert({ commit }, data) {
-			commit('updateAlert', data)
+		setAlert({ commit }, content) {
+			commit('updateAlert', content.alert)
+			commit('updateAlertContent', content.data)
 		},
-		setAction({ commit }, data) {
-			commit('updateAction', data)
+		setAction({ commit }, content) {
+			commit('updateAction', content)
+		},
+		resetAlert({ commit }) {
+			commit('updateAlert', '')
+			commit('updateAlertContent', '')
 		}
 	},
 	mutations: {
-		updateAlert(state, data) {
-			state.alert = data
+		updateAlert(state, content) {
+			state.alert = content
 		},
-		updateAction(state, data) {
-			state.action = data
+		updateAlertContent(state, content) {
+			state.alertContent = content
+		},
+		updateAction(state, content) {
+			state.action = content
 		}
 	},
 	getters: {
 		alert(state) {
 			return state.alert
+		},
+		alertContent(state) {
+			return state.alertContent
 		},
 		action(state) {
 			return state.action

@@ -9,7 +9,7 @@
 
 			<v-card-text class="py-12 px-4 text-center">
 				<v-icon size="86" class="animated flash red--text text--darken-2">{{ alertToolbarIcon(content.type) }}</v-icon>
-				<p class="body-2 mt-4">{{ $t(content.description) }}</p>
+				<p class="body-2 mt-4">{{ content.description }}</p>
 			</v-card-text>
 
 			<v-card-actions class="pa-4" v-if="content.buttons.length > 0">
@@ -37,13 +37,11 @@ export default {
 	},
 	methods: {
 		closed(v) {
-			this.$store.dispatch('setAlert', '')
-			console.log('ALERT WAS CLOSED')
+			this.$store.dispatch('resetAlert')
 		},
 		reset() {
 			this.active = false
-			this.$store.dispatch('setAlert', '')
-			console.log('ALERT WAS RESET')
+			this.$store.dispatch('resetAlert')
 		},
 		performAction(val) {
 			if (val === 'CLOSE_ALERT') {
@@ -83,12 +81,30 @@ export default {
 				return ''
 			}
 		},
+		formatAlert(val, content) {
+		},
 		buildAlert(val) {
 			if (val) {
 				for (let alert of AlertMessages) {
 					if (alert.id === val) {
-						this.content = alert
-						this.active = true
+						if (alert.description) {
+							let alertDescription = this.$t(alert.description)
+							let alertContent = this.$store.getters.alertContent
+
+							if (alertDescription.toString().includes('§') && !this.$utils.isEmpty(alertContent)) {
+								if (val === 'MATCH_WINNER') {
+									if (alertContent && alertContent.winner && alertContent.winner.name) {
+										alert.description = this.$utils.format(alertDescription, [alertContent.winner.name])
+									}
+								}
+							}
+							else {
+								alert.description = alertDescription
+							}
+
+							this.content = alert
+							this.active = true
+						}
 					}
 				}
 			}
@@ -106,7 +122,6 @@ export default {
 					})
 				}
 				else {
-					this.reset()
 					this.$nextTick(() => {
 						this.buildAlert(newMessage)
 					})

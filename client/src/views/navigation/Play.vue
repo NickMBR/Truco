@@ -10,7 +10,7 @@
 									<v-list-item>
 										<v-list-item-content>
 											<v-list-item-title>
-												<v-icon :color="$store.getters.colorMode ? active ? 'grey darken-4' : 'white' : $vuetify.theme.dark || active ? 'white' : ''">{{ item.icon }}</v-icon>
+												<v-icon small :color="$store.getters.colorMode ? active ? 'grey darken-4' : 'white' : $vuetify.theme.dark || active ? 'white' : ''">{{ item.icon }}</v-icon>
 											</v-list-item-title>
 											<v-list-item-title :class="$store.getters.colorMode ? active ? 'grey--text text--darken-4' : 'white--text' : $vuetify.theme.dark || active ? 'white--text' : ''">
 												{{ item.name }}
@@ -28,6 +28,34 @@
 		<v-row no-gutters style="height: 100%;">
 			<v-col sm="12" cols="12" class="mt-5">
 				<v-row no-gutters align="center" justify="center" class="pa-5 text-center">
+					<v-col sm="12" class="pa-5 text-center">
+						<v-row no-gutters class="noselect text-no-wrap">
+							<v-col sm="5" cols="5" @click="changeName('TEAM_ONE')" style="cursor: pointer;">
+								<p class="truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-1'">{{ teamOneName }}</p>
+							</v-col>
+							<v-col sm="2" cols="2">
+								<p class="truco-font" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-1'">vs</p>
+							</v-col>
+							<v-col sm="5" cols="5" @click="changeName('TEAM_TWO')" style="cursor: pointer;">
+								<p class="truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-1'">{{ teamTwoName }}</p>
+							</v-col>
+
+							<v-col sm="5" cols="5" @click="teamOneClick()" style="cursor: pointer;">
+								<div v-if="animateTeamOneScore" class="animated rubberBand">
+									<span class="display-4 primary--text">{{ teamOneScore }}</span>
+								</div>
+							</v-col>
+							<v-col sm="2" cols="2">
+								<v-divider vertical></v-divider>
+							</v-col>
+							<v-col sm="5" cols="5" @click="teamTwoClick()" style="cursor: pointer;">
+								<div v-if="animateTeamTwoScore" class="animated rubberBand">
+									<span class="display-4 primary--text">{{ teamTwoScore }}</span>
+								</div>
+							</v-col>
+						</v-row>
+					</v-col>
+					
 					<!--<v-col sm="12" class="pa-5 text-center">
 						<v-row no-gutters class="noselect">
 							<v-col sm="5" cols="5" @click="teamOneClick()" style="cursor: pointer;">
@@ -47,21 +75,22 @@
 							</v-col>
 						</v-row>
 					</v-col>-->
-					<v-col sm="12" cols="12" @click="teamOneClick()" style="cursor: pointer;">
-						<p class="truco-font sz-title-4 text-capitalize">{{ teamOneName }}</p>
+
+					<!--<v-col sm="12" cols="12" @click="teamOneClick()" style="cursor: pointer;">
+						<p class="truco-font sz-title-2 text-capitalize">{{ teamOneName }}</p>
 						<div v-if="animateTeamOneScore" class="animated rubberBand">
-							<span class="display-4 primary--text">{{ teamOneScore }}</span>
+							<span class="display-4 primary--text font-weigth-black">{{ teamOneScore }}</span>
 						</div>
 					</v-col>
 					<v-col sm="12" cols="12">
 						<v-divider></v-divider>
 					</v-col>
 					<v-col sm="12" cols="12" @click="teamTwoClick()" style="cursor: pointer;">
-						<p class="truco-font sz-title-4 text-capitalize">{{ teamTwoName }}</p>
+						<p class="truco-font sz-title-2 text-capitalize">{{ teamTwoName }}</p>
 						<div v-if="animateTeamTwoScore" class="animated rubberBand">
 							<span class="display-4 primary--text">{{ teamTwoScore }}</span>
 						</div>
-					</v-col>
+					</v-col>-->
 				</v-row>
 			</v-col>
 		</v-row>
@@ -160,13 +189,37 @@ export default {
 				return 12
 			}
 		},
+		getWinnerTeam(team) {
+			if (team === 'TEAM_ONE') {
+				return {
+					winner: {
+						name: this.teamOneName,
+						score: this.teamOneScore
+					},
+					loser: {
+						name: this.teamTwoName,
+						score: this.teamTwoScore
+					}
+				}
+			}
+			else if (team === 'TEAM_TWO') {
+				return {
+					winner: {
+						name: this.teamTwoName,
+						score: this.teamTwoScore
+					},
+					loser: {
+						name: this.teamOneName,
+						score: this.teamOneScore
+					}
+				}
+			}
+		},
 		sumScore(val, team) {
 			let totalScore = Number(val) + Number(this.formatScoreMode(this.toggleScoreMode))
 
 			if (this.$utils.isEmpty(this.winnerTeam)) {
 				if (totalScore >= 12) {
-					// TEAM WON
-					console.log('WINNER IS', team)
 					this.winnerTeam = team
 					if (team === 'TEAM_ONE') {
 						this.teamOneScore = 12
@@ -175,7 +228,7 @@ export default {
 						this.teamTwoScore = 12
 					}
 
-					this.$store.dispatch('setAlert', 'MATCH_WINNER')
+					this.$store.dispatch('setAlert', { alert: 'MATCH_WINNER', data: this.getWinnerTeam(this.winnerTeam) })
 				}
 				else {
 					if (team === 'TEAM_ONE') {
@@ -187,8 +240,7 @@ export default {
 				}
 			}
 			else {
-				console.log('WINNER IS', this.winnerTeam)
-				this.$store.dispatch('setAlert', 'MATCH_WINNER')
+				this.$store.dispatch('setAlert', { alert: 'MATCH_WINNER', data: this.getWinnerTeam(this.winnerTeam) })
 			}
 
 			// RESET SCORE MODE
@@ -221,7 +273,6 @@ export default {
 				this.$store.dispatch('setAction', '')
 			}
 			else if (this.$store.getters.action == 'SAVE_MATCH') {
-				console.log('SAVE_MATCH')
 				this.$store.dispatch('setAction', '')
 			}
 		}

@@ -27,6 +27,7 @@ export default {
 	},
 	menu: {
 		home: 'Início',
+		play: 'Jogar',
 		about: 'Sobre',
 		exit: 'Sair',
 		tools: 'Ferramentas',

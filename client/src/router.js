@@ -10,16 +10,16 @@ const router = new Router({
 		{
 			path: '/',
 			name: 'Main',
-			redirect: '/home',
+			redirect: '/play',
 			component: () => import('./views/Main.vue'),
 			children: [
 				{
-					path: '/home',
-					name: 'Home',
+					path: '/play',
+					name: 'Play',
 					meta: {
-						title: 'Home'
+						title: 'Play'
 					},
-					component: () => import('./views/navigation/Home.vue')
+					component: () => import('./views/navigation/Play.vue')
 				},
 				{
 					path: '/settings',

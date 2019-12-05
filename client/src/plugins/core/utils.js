@@ -15,9 +15,27 @@ const utilities = {
 			return ''
 		}
 	},
-
 	replaceAll(source, target, replacement) {
 		return source.replace(new RegExp(target, 'g'), replacement)
+	},
+	format(source, args) {
+		const canFormat = source.search('§')
+		let sourceArgs = args || []
+
+		if (canFormat !== -1 && sourceArgs.length > 0) {
+			let argIndex = -1
+			for (let i = 0; i < source.length; i++) {
+				if (source[i] === '§') {
+					argIndex++
+					source = source.substr(0, i) + sourceArgs[argIndex] + source.substr(i + 1)
+				}
+			}
+
+			return source
+		}
+		else {
+			return source
+		}
 	}
 }
 

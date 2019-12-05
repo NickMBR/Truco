@@ -1,7 +1,16 @@
 - Save temporary score, always.
 - Save match when someone wins
-	- the reset scores
+	- then reset scores
 	- keep scores from team names
 - Allow team name changes
-- Remove save button from the main toolbar
+
+- Add history to points on all matches
+	- array resets with match reset
+	- store points added to the selected team
+- Add undo/redo on scores for user mistakes
+
+- Fix home page paddings on mobile
+
+DONES:
 - Add § translate functionality to alerts
+- Remove save button from the main toolbar

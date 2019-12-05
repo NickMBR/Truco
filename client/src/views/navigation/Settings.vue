@@ -7,9 +7,9 @@
 				</v-toolbar>
 			</v-col>
 
-			<v-col sm="12" class="mt-12">
+			<v-col cols="12" sm="12" class="mt-12">
 				<v-row no-gutters align="center" justify="center">
-					<v-col sm="12" md="6" class="pa-5">
+					<v-col cols="12" sm="12" md="6" :class="$vuetify.breakpoint.mdAndUp ? 'pa-5' : 'pa-2'">
 						<v-row no-gutters>
 							<v-col cols="4">
 								<v-subheader>{{ $t('forms.language') }}</v-subheader>
@@ -177,7 +177,7 @@ export default {
 			this.$store.commit('updateColorMode', { darkMode: this.darkMode, theme: theme })
 		},
 		testAlert() {
-			this.$store.dispatch('setAlert', 'TEST_ALERT')
+			this.$store.dispatch('setAlert', { alert: 'TEST_ALERT', data: [] })
 		}
 	},
 	watch: {
@@ -210,7 +210,6 @@ export default {
 		},
 		'$store.getters.action'() {
 			if (this.$store.getters.action == 'CONSOLE_TEST') {
-				console.log('ALERT ACTION WAS PERFORMED')
 				this.$store.dispatch('setAction', '')
 			}
 		}

@@ -12,6 +12,10 @@
 					<v-col sm="12" md="6" class="pa-5 text-center">
 						<v-row no-gutters>
 							<v-col cols="12">
+								<img :src="mainLogo" />
+							</v-col>
+
+							<v-col cols="12">
 								<p class="mb-0 font-weight-thin primary--text truco-font" style="font-size: 54px;">
 									<b>{{ $t('app.title') }}</b>
 								</p>
@@ -59,9 +63,12 @@
 </template>
 
 <script>
+import trucoLogo from '../../assets/img/dt_logo_256.png'
+
 export default {
 	data() {
 		return {
+			mainLogo: trucoLogo
 		}
 	}
 }
