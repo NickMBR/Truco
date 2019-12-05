@@ -52,7 +52,7 @@ const alerts = [
 			{
 				type: 'success',
 				title: 'common.ok',
-				action: 'CLOSE_ALERT'
+				action: 'SAVE_AND_RESET_MATCH'
 			}
 		],
 		options: {

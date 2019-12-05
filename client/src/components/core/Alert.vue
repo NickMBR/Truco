@@ -55,6 +55,10 @@ export default {
 				this.$store.dispatch('setAction', 'SAVE_MATCH')
 				this.reset()
 			}
+			else if (val === 'SAVE_AND_RESET_MATCH') {
+				this.$store.dispatch('setAction', 'SAVE_AND_RESET_MATCH')
+				this.reset()
+			}
 		},
 		alertToolbarColor(type) {
 			if (type === 'DANGER') {

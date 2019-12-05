@@ -9,9 +9,7 @@
 								<v-list dense disabled color="transparent">
 									<v-list-item>
 										<v-list-item-content>
-											<v-list-item-title>
-												<v-icon small :color="$store.getters.colorMode ? active ? 'grey darken-4' : 'white' : $vuetify.theme.dark || active ? 'white' : ''">{{ item.icon }}</v-icon>
-											</v-list-item-title>
+											<v-icon small :color="$store.getters.colorMode ? active ? 'grey darken-4' : 'white' : $vuetify.theme.dark || active ? 'white' : ''">{{ item.icon }}</v-icon>
 											<v-list-item-title :class="$store.getters.colorMode ? active ? 'grey--text text--darken-4' : 'white--text' : $vuetify.theme.dark || active ? 'white--text' : ''">
 												{{ item.name }}
 											</v-list-item-title>
@@ -52,6 +50,19 @@
 								<div v-if="animateTeamTwoScore" class="animated rubberBand">
 									<span class="display-4 primary--text">{{ teamTwoScore }}</span>
 								</div>
+							</v-col>
+
+							<v-col sm="12" cols="12" class="mt-12" v-if="matchHistory && matchHistory.length > 0">
+								<v-btn large icon><v-icon>mdi-undo</v-icon></v-btn>
+								<v-btn large icon><v-icon>mdi-redo</v-icon></v-btn>
+							</v-col>
+
+							<v-col sm="12" cols="12" class="mt-12" v-if="matchHistory && matchHistory.length > 0">
+								<template v-for="(history, index) in matchHistory" class="mt-5">
+									<p :key="index" class="caption grey--text mb-0">
+										{{history.teamName}} - got {{ history.pointsAdded }}
+									</p>
+								</template>
 							</v-col>
 						</v-row>
 					</v-col>
@@ -121,6 +132,9 @@
 </template>
 
 <script>
+import moment from 'moment'
+import matchService from '../../services/match'
+
 export default {
 	data() {
 		return {
@@ -158,17 +172,34 @@ export default {
 
 			// TEAMS
 			winnerTeam: '',
-			teamOneName: 'Team 1',
-			teamTwoName: 'Team 2',
+			teamOneName: 'A',
+			teamTwoName: 'B',
 
 			// SCORE
 			toggleScoreMode: 0,
 			teamOneScore: 0,
 			teamTwoScore: 0,
 
+			// HISTORY
+			matchHistory: [],
+
 			// ANIMATIONS
 			animateTeamOneScore: true,
 			animateTeamTwoScore: true
+		}
+	},
+	mounted() {
+		console.log('MATCH STARTED')
+		matchService.getRunningMatch().then(match => {
+			console.log('MATCH?', match)
+		}).catch(error => {
+			console.log('DOES NOT HAVE A MATCH?', error)
+		})
+	},
+	beforeDestroy() {
+		console.log('MATCH NOT SAVED..')
+		if (this.teamOneScore !== 0 || this.teamTwoScore !== 0 || this.teamOneName !== 'A' || this.teamTwoName !== 'B') {
+			
 		}
 	},
 	methods: {
@@ -229,6 +260,7 @@ export default {
 					}
 
 					this.$store.dispatch('setAlert', { alert: 'MATCH_WINNER', data: this.getWinnerTeam(this.winnerTeam) })
+
 				}
 				else {
 					if (team === 'TEAM_ONE') {
@@ -242,6 +274,21 @@ export default {
 			else {
 				this.$store.dispatch('setAlert', { alert: 'MATCH_WINNER', data: this.getWinnerTeam(this.winnerTeam) })
 			}
+
+			// SET HISTORY
+			this.matchHistory.push({
+				date: moment().format('DD/MM/YYYY HH:mm'),
+				teamAdded: team,
+				teamName: team === 'TEAM_ONE' ? this.teamOneName : this.teamTwoName,
+				teamOldScore: Number(val),
+				pointsAdded: Number(this.formatScoreMode(this.toggleScoreMode)),
+				teams: {
+					teamOneName: this.teamOneName,
+					teamOneScore: this.teamOneScore,
+					teamTwoName: this.teamTwoName,
+					teamTwoScore: this.teamTwoScore
+				}
+			})
 
 			// RESET SCORE MODE
 			if (this.toggleScoreMode != 0) {
@@ -261,18 +308,26 @@ export default {
 			this.$nextTick(() => {
 				this.animateTeamTwoScore = true
 			})
+		},
+		resetMatch() {
+			this.matchHistory = []
+			this.winnerTeam = ''
+			this.toggleScoreMode = 0
+			this.teamOneScore = 0
+			this.teamTwoScore = 0
 		}
 	},
 	watch: {
 		'$store.getters.action'() {
 			if (this.$store.getters.action == 'RESET_MATCH') {
-				this.winnerTeam = ''
-				this.toggleScoreMode = 0
-				this.teamOneScore = 0
-				this.teamTwoScore = 0
+				this.resetMatch()
 				this.$store.dispatch('setAction', '')
 			}
 			else if (this.$store.getters.action == 'SAVE_MATCH') {
+				this.$store.dispatch('setAction', '')
+			}
+			else if (this.$store.getters.action == 'SAVE_AND_RESET_MATCH') {
+				this.resetMatch()
 				this.$store.dispatch('setAction', '')
 			}
 		}
