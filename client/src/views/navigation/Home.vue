@@ -27,8 +27,8 @@
 
 		<v-row no-gutters style="height: 100%;">
 			<v-col sm="12" cols="12" class="mt-5">
-				<v-row no-gutters align="center" justify="center">
-					<v-col sm="12" class="pa-5 text-center">
+				<v-row no-gutters align="center" justify="center" class="pa-5 text-center">
+					<!--<v-col sm="12" class="pa-5 text-center">
 						<v-row no-gutters class="noselect">
 							<v-col sm="5" cols="5" @click="teamOneClick()" style="cursor: pointer;">
 								<p class="truco-font sz-title-4 text-capitalize">{{ teamOneName }}</p>
@@ -46,6 +46,21 @@
 								</div>
 							</v-col>
 						</v-row>
+					</v-col>-->
+					<v-col sm="12" cols="12" @click="teamOneClick()" style="cursor: pointer;">
+						<p class="truco-font sz-title-4 text-capitalize">{{ teamOneName }}</p>
+						<div v-if="animateTeamOneScore" class="animated rubberBand">
+							<span class="display-4 primary--text">{{ teamOneScore }}</span>
+						</div>
+					</v-col>
+					<v-col sm="12" cols="12">
+						<v-divider></v-divider>
+					</v-col>
+					<v-col sm="12" cols="12" @click="teamTwoClick()" style="cursor: pointer;">
+						<p class="truco-font sz-title-4 text-capitalize">{{ teamTwoName }}</p>
+						<div v-if="animateTeamTwoScore" class="animated rubberBand">
+							<span class="display-4 primary--text">{{ teamTwoScore }}</span>
+						</div>
 					</v-col>
 				</v-row>
 			</v-col>
