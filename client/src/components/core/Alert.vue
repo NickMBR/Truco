@@ -81,28 +81,40 @@ export default {
 				return ''
 			}
 		},
-		formatAlert(val, content) {
+		formatAlert(val, source, content) {
+			let formattedAlert = ''
+
+			if (val && content) {
+				if (val === 'MATCH_WINNER') {
+					if (content && content.winner && content.winner.name) {
+						formattedAlert = this.$utils.format(source, [content.winner.name])
+					}
+				}
+			}
+
+			return formattedAlert
 		},
 		buildAlert(val) {
 			if (val) {
 				for (let alert of AlertMessages) {
 					if (alert.id === val) {
 						if (alert.description) {
+							// SET DEFAULT DATA
+							let cloneAlert = { ...alert }
 							let alertDescription = this.$t(alert.description)
 							let alertContent = this.$store.getters.alertContent
 
+							// FORMAT THE ALERT
 							if (alertDescription.toString().includes('§') && !this.$utils.isEmpty(alertContent)) {
-								if (val === 'MATCH_WINNER') {
-									if (alertContent && alertContent.winner && alertContent.winner.name) {
-										alert.description = this.$utils.format(alertDescription, [alertContent.winner.name])
-									}
-								}
+								let formattedAlert = this.formatAlert(val, alertDescription, alertContent)
+								cloneAlert.description = formattedAlert
 							}
 							else {
-								alert.description = alertDescription
+								cloneAlert.description = alertDescription
 							}
 
-							this.content = alert
+							// SET THE ALERT
+							this.content = cloneAlert
 							this.active = true
 						}
 					}
