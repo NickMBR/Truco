@@ -38,15 +38,6 @@
 							<v-col cols="8">
 								<v-switch class="pt-2" color="primary" v-model="darkMode"></v-switch>
 							</v-col>
-
-							<v-col cols="4" class="">
-								<v-subheader>{{ $t('alerts.test.button') }}</v-subheader>
-							</v-col>
-							<v-col cols="8" class="">
-								<v-btn color="primary">
-									<v-icon :color="$store.getters.colorMode ? 'grey darken-4' : ''" @click="testAlert()">mdi-alert-outline</v-icon>
-								</v-btn>
-							</v-col>
 						</v-row>
 					</v-col>
 				</v-row>
@@ -175,9 +166,6 @@ export default {
 			}
 
 			this.$store.commit('updateColorMode', { darkMode: this.darkMode, theme: theme })
-		},
-		testAlert() {
-			this.$store.dispatch('setAlert', { alert: 'TEST_ALERT', data: [] })
 		}
 	},
 	watch: {
@@ -207,11 +195,6 @@ export default {
 			}
 
 			this.$store.commit('updateColorMode', { darkMode: this.darkMode, theme: this.theme.id })
-		},
-		'$store.getters.action'() {
-			if (this.$store.getters.action == 'CONSOLE_TEST') {
-				this.$store.dispatch('setAction', '')
-			}
 		}
 	}
 }

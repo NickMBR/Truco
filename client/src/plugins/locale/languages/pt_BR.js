@@ -85,10 +85,6 @@ export default {
 		}
 	},
 	alerts: {
-		test: {
-			button: 'Testar Alerta',
-			message: 'Esse é um alerta de testes'
-		},
 		game: {
 			save: 'Tem certeza que deseja salvar essa partida?',
 			reset: 'Tem certeza que deseja resetar essa partida?',

@@ -85,10 +85,6 @@ export default {
 		}
 	},
 	alerts: {
-		test: {
-			button: 'Test Alert',
-			message: 'This is a test alert'
-		},
 		game: {
 			save: 'Are you sure you want to save this match?',
 			reset: 'Are you sure you want to reset this match?',

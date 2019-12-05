@@ -47,10 +47,6 @@ export default {
 			if (val === 'CLOSE_ALERT') {
 				this.reset()
 			}
-			else if (val === 'CONSOLE_TEST') {
-				this.$store.dispatch('setAction', 'CONSOLE_TEST')
-				this.reset()
-			}
 			else if (val === 'RESET_MATCH') {
 				this.$store.dispatch('setAction', 'RESET_MATCH')
 				this.reset()
