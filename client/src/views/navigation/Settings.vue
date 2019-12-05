@@ -9,7 +9,7 @@
 
 			<v-col cols="12" sm="12" class="mt-12">
 				<v-row no-gutters align="center" justify="center">
-					<v-col cols="12" sm="12" md="6" :class="$vuetify.breakpoint.mdAndUp ? 'pa-5' : 'pa-2'">
+					<v-col cols="12" sm="12" md="8" :class="$vuetify.breakpoint.mdAndUp ? 'pa-5' : 'pa-2'">
 						<v-row no-gutters>
 							<v-col cols="4">
 								<v-subheader>{{ $t('forms.language') }}</v-subheader>
@@ -36,7 +36,14 @@
 								<v-subheader>{{ $t('forms.darkMode') }}</v-subheader>
 							</v-col>
 							<v-col cols="8">
-								<v-switch class="pt-2" color="primary" v-model="darkMode"></v-switch>
+								<v-switch hide-details class="pt-2" color="primary" v-model="darkMode"></v-switch>
+							</v-col>
+
+							<v-col cols="4" class="mt-3">
+								<v-subheader>{{ $t('forms.showMatchHistory') }}</v-subheader>
+							</v-col>
+							<v-col cols="8">
+								<v-switch hide-details class="pt-2" color="primary" v-model="showMatchHistory"></v-switch>
 							</v-col>
 						</v-row>
 					</v-col>
@@ -82,7 +89,8 @@ export default {
 					value: 'themes.orchid'
 				}
 			],
-			darkMode: false
+			darkMode: false,
+			showMatchHistory: true
 		}
 	},
 	mounted() {

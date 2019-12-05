@@ -47,7 +47,8 @@ export default {
 	forms: {
 		language: 'Language',
 		theme: 'Theme',
-		darkMode: 'Dark Mode'
+		darkMode: 'Dark Mode',
+		showMatchHistory: 'Show Match History'
 	},
 	time: {
 		day: 'Day',

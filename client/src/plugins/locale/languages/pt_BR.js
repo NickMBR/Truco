@@ -47,7 +47,8 @@ export default {
 	forms: {
 		language: 'Idioma',
 		theme: 'Tema',
-		darkMode: 'Modo Escuro'
+		darkMode: 'Modo Escuro',
+		showMatchHistory: 'Mostrar Histórico da Partida'
 	},
 	time: {
 		day: 'Dia',
