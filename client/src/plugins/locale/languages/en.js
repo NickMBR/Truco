@@ -25,6 +25,10 @@ export default {
 		stats: 'Stats',
 		nice: 'Nice!'
 	},
+	game: {
+		teamA: 'Us',
+		teamB: 'Them'
+	},
 	menu: {
 		home: 'Home',
 		play: 'Play',
@@ -89,7 +93,7 @@ export default {
 		game: {
 			save: 'Are you sure you want to save this match?',
 			reset: 'Are you sure you want to reset this match?',
-			winner: 'The team § won the match!'
+			winner: '§ won the match!'
 		}
 	},
 	$vuetify: {

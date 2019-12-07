@@ -7,7 +7,7 @@ let matchService = {
 			let runningMatch = []
 			Promise.resolve().then(() => {
 				return cache.getCache('truco-running-match').then(result => {
-					if (result && result.id) {
+					if (result && result.length > 0) {
 						runningMatch = result
 					}
 				}).catch(error => {
@@ -42,6 +42,19 @@ let matchService = {
 				else {
 					return true
 				}
+			}).then(() => {
+				resolve()
+			}).catch(error => {
+				reject(error)
+			})
+		})
+	},
+	removeRunningMatch() {
+		return new Promise((resolve, reject) => {
+			Promise.resolve().then(() => {
+				return cache.removeCache('truco-running-match').catch(error => {
+					throw new Error('CANNOT_REMOVE_RUNNING_MTACH, ERROR:', error)
+				})
 			}).then(() => {
 				resolve()
 			}).catch(error => {
