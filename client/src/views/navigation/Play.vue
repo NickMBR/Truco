@@ -192,6 +192,17 @@ export default {
 		console.log('MATCH STARTED')
 		matchService.getRunningMatch().then(match => {
 			console.log('MATCH?', match)
+			if (match && match.length > 0 && match[0].teams) {
+				let teams = match[0].teams
+				this.matchHistory = match
+				this.teamOneScore = match.teamOneScore
+				this.teamOneName = match.teamOneName
+				this.teamTwoScore = match.teamTwoScore
+				this.teamTwoName = match.teamTwoName
+			}
+			else {
+				this.resetMatch()
+			}
 		}).catch(error => {
 			console.log('DOES NOT HAVE A MATCH?', error)
 		})
@@ -199,7 +210,9 @@ export default {
 	beforeDestroy() {
 		console.log('MATCH NOT SAVED..')
 		if (this.teamOneScore !== 0 || this.teamTwoScore !== 0 || this.teamOneName !== 'A' || this.teamTwoName !== 'B') {
-			
+			if (this.matchHistory && this.matchHistory.length > 0) {
+				matchService.saveRunningMatch(this.matchHistory)
+			}
 		}
 	},
 	methods: {

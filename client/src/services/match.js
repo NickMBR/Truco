@@ -19,6 +19,35 @@ let matchService = {
 				reject(error)
 			})
 		})
+	},
+	saveRunningMatch(data) {
+		return new Promise((resolve, reject) => {
+			Promise.resolve().then(() => {
+				if (data && data.length > 0) {
+					let validMatch = true
+					for (let match of data) {
+						if (!match.date || !match.teamAdded || !match.teamName) {
+							validMatch = false
+						}
+					}
+					if (validMatch) {
+						return cache.setCache('truco-running-match', data, false).catch(error => {
+							throw new Error('CANNOT_SAVE_MATCH, ERROR:', error)
+						})
+					}
+					else {
+						throw new Error('CANNOT_SAVE_MATCH_INVALID_DATA')
+					}
+				}
+				else {
+					return true
+				}
+			}).then(() => {
+				resolve()
+			}).catch(error => {
+				reject(error)
+			})
+		})
 	}
 }
 
