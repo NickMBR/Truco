@@ -297,6 +297,7 @@ export default {
 				teamAdded: team,
 				teamName: team === 'TEAM_ONE' ? this.teamOneName === 'A' ? this.$t('game.teamA') : this.teamOneName : this.teamTwoName === 'B' ? this.$t('game.teamB') : this.teamTwoName,
 				teamOldScore: Number(val),
+				teamNewScore: totalScore >= 12 ? 12 : totalScore,
 				pointsAdded: Number(this.formatScoreMode(this.toggleScoreMode)),
 				teams: {
 					teamOneName: this.teamOneName,
@@ -388,16 +389,16 @@ export default {
 			}
 		},
 		setMatchToHistory(data, type) {
+			console.log('MATCH DATA', data)
 			let teamData = ''
 			if (data && data.teamAdded) {
 				teamData = data.teamAdded
-				console.log('OLD SCORE:', data.teamOldScore, 'POINTS ADDED', data.pointsAdded)
 
 				if (teamData === 'TEAM_ONE') {
-					this.teamOneScore = type === 'UNDO' ? data.teamOldScore : data.teamOldScore + data.pointsAdded
+					this.teamOneScore = type === 'UNDO' ? data.teamOldScore : data.teamNewScore
 				}
 				else if (teamData === 'TEAM_TWO') {
-					this.teamTwoScore = type === 'UNDO' ? data.teamOldScore : data.teamOldScore + data.pointsAdded
+					this.teamTwoScore = type === 'UNDO' ? data.teamOldScore : data.teamNewScore
 				}
 
 				// SET HISTORY
@@ -408,6 +409,7 @@ export default {
 					teamAdded: teamData,
 					teamName: teamData === 'TEAM_ONE' ? this.teamOneName === 'A' ? this.$t('game.teamA') : this.teamOneName : this.teamTwoName === 'B' ? this.$t('game.teamB') : this.teamTwoName,
 					teamOldScore: Number(data.teamOldScore),
+					teamNewScore: Number(data.teamNewScore),
 					pointsAdded: data.pointsAdded,
 					teams: data.teams
 				})
@@ -423,6 +425,7 @@ export default {
 					this.matchHistoryUndoCount = matchs.length
 				}
 
+				console.log('UNDO MATCHS', this.matchHistoryUndoCount, matchs.length)
 				this.setMatchToHistory(matchs[matchs.length - this.matchHistoryUndoCount], 'UNDO')
 
 				if (this.matchHistoryUndoCount != 0) {
@@ -440,8 +443,8 @@ export default {
 					this.matchHistoryUndoCount -= 1
 				}
 
-				console.log('REDO TO', this.matchHistoryUndoCount, matchs.length, matchs)
-				this.setMatchToHistory(matchs[matchs.length - this.matchHistoryUndoCount], 'REDO')
+				console.log('UNDO MATCHS', this.matchHistoryUndoCount, matchs.length)
+				this.setMatchToHistory(matchs[this.matchHistoryUndoCount != 0 ? (matchs.length - this.matchHistoryUndoCount) - 1 : matchs.length - 1], 'REDO')
 			}
 			/*
 			// REDO TO
