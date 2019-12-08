@@ -28,14 +28,16 @@
 				<v-row no-gutters align="center" justify="center" class="text-center">
 					<v-col sm="12" class="pa-5 text-center">
 						<v-row no-gutters class="noselect text-no-wrap">
-							<v-col sm="5" cols="5" @click="changeName('TEAM_ONE')" style="cursor: pointer;">
-								<p class="truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-1'">{{ teamOneName === 'A' ? $t('game.teamA') : teamOneName }}</p>
+							<v-col sm="5" cols="5" @click="changeName('TEAM_ONE', true)" style="cursor: pointer;">
+								<p v-show="!teamOneChangingName" class="truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-1'">{{ teamOneName === 'A' ? $t('game.teamA') : teamOneName }}</p>
+								<v-text-field solo :class="$vuetify.breakpoint.mdAndUp ? 'pl-5' : ''" v-show="teamOneChangingName" v-model="teamOneName" :rules="[$rules.required, $rules.alphaNumeric]" @blur="changeName('TEAM_ONE', false)"></v-text-field>
 							</v-col>
 							<v-col sm="2" cols="2">
 								<p class="truco-font" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-1'">vs</p>
 							</v-col>
-							<v-col sm="5" cols="5" @click="changeName('TEAM_TWO')" style="cursor: pointer;">
-								<p class="truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-1'">{{ teamTwoName === 'B' ? $t('game.teamB') : teamTwoName }}</p>
+							<v-col sm="5" cols="5" @click="changeName('TEAM_TWO', true)" style="cursor: pointer;">
+								<p v-show="!teamTwoChangingName" class="truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-1'">{{ teamTwoName === 'B' ? $t('game.teamB') : teamTwoName }}</p>
+								<v-text-field solo :class="$vuetify.breakpoint.mdAndUp ? 'pl-5' : ''" v-show="teamTwoChangingName" v-model="teamTwoName" :rules="[$rules.required, $rules.alphaNumeric]" @blur="changeName('TEAM_TWO', false)"></v-text-field>
 							</v-col>
 
 							<v-col sm="5" cols="5" @click="teamOneClick()" style="cursor: pointer;" class="pa-5">
@@ -54,13 +56,22 @@
 
 							<v-col sm="12" cols="12" class="mt-12" v-if="matchHistory && matchHistory.length > 0">
 								<v-btn large icon @click="undoScore()"><v-icon>mdi-undo</v-icon></v-btn>
-								<v-btn large icon @click="redoScore()"><v-icon>mdi-redo</v-icon></v-btn>
+								<v-btn large icon @click="redoScore()" :disabled="!enableRedo"><v-icon>mdi-redo</v-icon></v-btn>
 							</v-col>
 
 							<v-col sm="12" cols="12" class="mt-12" v-if="matchHistory && matchHistory.length > 0">
+								<p class="caption grey--text">{{ $t('common.history') }}</p>
 								<template v-for="(history, index) in matchHistory" class="mt-5">
 									<p :key="index" class="caption grey--text mb-0">
-										{{history.teamName}} - got {{ history.pointsAdded }}
+										<template v-if="history.type === 'SCORE'">
+											{{history.teamName}} SCORED {{ history.pointsAdded }} POINTS
+										</template>
+										<template v-if="history.type === 'UNDO'">
+											{{history.teamName}} UNDONE THE {{ history.pointsAdded }} POINTS RECEIVED
+										</template>
+										<template v-if="history.type === 'REDO'">
+											{{history.teamName}} REGAINED THE {{ history.pointsAdded }} UNDONE POINTS
+										</template>
 									</p>
 								</template>
 							</v-col>
@@ -173,7 +184,9 @@ export default {
 			// TEAMS
 			winnerTeam: '',
 			teamOneName: 'A',
+			teamOneChangingName: false,
 			teamTwoName: 'B',
+			teamTwoChangingName: false,
 
 			// SCORE
 			toggleScoreMode: 0,
@@ -182,7 +195,10 @@ export default {
 
 			// HISTORY
 			matchHistory: [],
+			matchHistoryUndoCount: 0,
+			matchHistoryRedoCount: 0,
 			matchHistoryHeader: '',
+			enableRedo: true,
 
 			// ANIMATIONS
 			animateTeamOneScore: true,
@@ -276,6 +292,7 @@ export default {
 			// SET HISTORY
 			this.matchHistory.push({
 				id: Math.random().toString(36).substr(2, 8).toUpperCase(),
+				type: 'SCORE',
 				date: moment().format('DD/MM/YYYY HH:mm'),
 				teamAdded: team,
 				teamName: team === 'TEAM_ONE' ? this.teamOneName === 'A' ? this.$t('game.teamA') : this.teamOneName : this.teamTwoName === 'B' ? this.$t('game.teamB') : this.teamTwoName,
@@ -294,8 +311,13 @@ export default {
 				this.toggleScoreMode = 0
 			}
 		},
-		changeName(team) {
-
+		changeName(team, shouldEdit) {
+			if (team === 'TEAM_ONE') {
+				this.teamOneChangingName = shouldEdit
+			}
+			else if (team === 'TEAM_TWO') {
+				this.teamTwoChangingName = shouldEdit
+			}
 		},
 		teamOneClick() {
 			this.sumScore(this.teamOneScore, 'TEAM_ONE')
@@ -322,7 +344,6 @@ export default {
 		loadTemporaryMatch() {
 			matchService.getRunningMatch().then(match => {
 				console.log('SHOULD LOAD MATCH', match)
-
 				if (match && match.length > 0 && match[0].teams) {
 					let teams = match[match.length - 1].teams
 					this.matchHistory = match
@@ -330,7 +351,6 @@ export default {
 					this.teamTwoScore = teams.teamTwoScore
 					this.teamOneName = teams.teamOneName
 					this.teamTwoName = teams.teamTwoName
-
 				}
 				else {
 					this.resetMatch()
@@ -345,42 +365,116 @@ export default {
 			this.toggleScoreMode = 0
 			this.teamOneScore = 0
 			this.teamTwoScore = 0
+			this.matchHistoryUndoCount = 0
+
+			// REMOVE SAVED MATCH
 			matchService.removeRunningMatch().then(() => {
 				console.log('MATCH RESETTED')
 			}).catch(error => {
 				console.log('REMOVE MATCH ERROR?', error)
 			})
 		},
-		undoScore() {
-			if (this.matchHistory && this.matchHistory.length == 1) {
-				this.teamOneScore = 0
-				this.teamTwoScore = 0
+		getMatchPointsHistory() {
+			if (this.matchHistory && this.matchHistory.length > 0) {
+				let pointsHistory = []
+
+				for (let match of this.matchHistory) {
+					if (match.type === 'SCORE') {
+						pointsHistory.push(match)
+					}
+				}
+
+				return pointsHistory
 			}
-			else if (this.matchHistory && this.matchHistory.length > 1) {
-				// GET HEADER
-				let lastHistory = this.matchHistory[this.matchHistory.length - 1]
-				if (lastHistory && lastHistory.teamAdded) {
-					this.matchHistoryHeader = lastHistory.id
+		},
+		setMatchToHistory(data, type) {
+			let teamData = ''
+			if (data && data.teamAdded) {
+				teamData = data.teamAdded
+				console.log('OLD SCORE:', data.teamOldScore, 'POINTS ADDED', data.pointsAdded)
+
+				if (teamData === 'TEAM_ONE') {
+					this.teamOneScore = type === 'UNDO' ? data.teamOldScore : data.teamOldScore + data.pointsAdded
+				}
+				else if (teamData === 'TEAM_TWO') {
+					this.teamTwoScore = type === 'UNDO' ? data.teamOldScore : data.teamOldScore + data.pointsAdded
 				}
 
-				console.log('UNDO', lastHistory, this.matchHistoryHeader)
-
-				/*
-				let lastHistory = this.matchHistory[this.matchHistory.length - 1]
-				console.log('LAST HISTORY', lastHistory)
-				if (lastHistory && lastHistory.teamAdded) {
-					if (lastHistory.teamAdded === 'TEAM_ONE') {
-						this.teamOneScore = lastHistory.teamOldScore
-					}
-					else if (lastHistory.teamAdded === 'TEAM_TWO') {
-						this.teamTwoScore = lastHistory.teamOldScore
-					}
+				// SET HISTORY
+				this.matchHistory.push({
+					id: Math.random().toString(36).substr(2, 8).toUpperCase(),
+					type: type,
+					date: moment().format('DD/MM/YYYY HH:mm'),
+					teamAdded: teamData,
+					teamName: teamData === 'TEAM_ONE' ? this.teamOneName === 'A' ? this.$t('game.teamA') : this.teamOneName : this.teamTwoName === 'B' ? this.$t('game.teamB') : this.teamTwoName,
+					teamOldScore: Number(data.teamOldScore),
+					pointsAdded: data.pointsAdded,
+					teams: data.teams
+				})
+			}
+		},
+		undoScore() {
+			let matchs = this.getMatchPointsHistory()
+			if (matchs && matchs.length > 0) {
+				if (this.matchHistoryUndoCount < matchs.length) {
+					this.matchHistoryUndoCount += 1
 				}
-				*/
+				else {
+					this.matchHistoryUndoCount = matchs.length
+				}
+
+				this.setMatchToHistory(matchs[matchs.length - this.matchHistoryUndoCount], 'UNDO')
+
+				if (this.matchHistoryUndoCount != 0) {
+					this.enableRedo = true
+				}
+				else {
+					this.enableRedo = false
+				}
 			}
 		},
 		redoScore() {
-			
+			let matchs = this.getMatchPointsHistory()
+			if (matchs && matchs.length > 0) {
+				if (this.matchHistoryUndoCount > 0) {
+					this.matchHistoryUndoCount -= 1
+				}
+
+				console.log('REDO TO', this.matchHistoryUndoCount, matchs.length, matchs)
+				this.setMatchToHistory(matchs[matchs.length - this.matchHistoryUndoCount], 'REDO')
+			}
+			/*
+			// REDO TO
+			let redoTo = this.matchPointHistory[this.matchHistoryUndoCount != 0 ? this.matchPointHistory.length - this.matchHistoryUndoCount : this.matchPointHistory.length - 1]
+			let teamRedo = ''
+			if (redoTo && redoTo.teamAdded) {
+				teamRedo = redoTo.teamAdded
+
+				if (teamRedo === 'TEAM_ONE') {
+					this.teamOneScore = redoTo.teams.teamOneScore
+				}
+				else if (teamRedo === 'TEAM_TWO') {
+					this.teamTwoScore = redoTo.teams.teamTwoScore
+				}
+
+				// SET HISTORY
+				this.matchHistory.push({
+					id: Math.random().toString(36).substr(2, 8).toUpperCase(),
+					type: 'REDO',
+					date: moment().format('DD/MM/YYYY HH:mm'),
+					teamAdded: teamRedo,
+					teamName: teamRedo === 'TEAM_ONE' ? this.teamOneName === 'A' ? this.$t('game.teamA') : this.teamOneName : this.teamTwoName === 'B' ? this.$t('game.teamB') : this.teamTwoName,
+					teamOldScore: Number(redoTo.teamOldScore),
+					pointsAdded: redoTo.pointsAdded,
+					teams: {
+						teamOneName: this.teamOneName,
+						teamOneScore: this.teamOneScore,
+						teamTwoName: this.teamTwoName,
+						teamTwoScore: this.teamTwoScore
+					}
+				})
+			}
+			*/
 		}
 	},
 	watch: {

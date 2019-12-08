@@ -23,7 +23,8 @@ export default {
 		until: 'Until',
 		details: 'Details',
 		stats: 'Stats',
-		nice: 'Nice!'
+		nice: 'Nice!',
+		history: 'History'
 	},
 	game: {
 		teamA: 'Us',
