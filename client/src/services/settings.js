@@ -32,6 +32,7 @@ let settingsService = {
 						settings = {
 							theme: 'default',
 							darkMode: false,
+							showHistory: true,
 							language: setLang,
 							version: '0.0.1',
 							author: 'Nicolas Mello'
@@ -65,6 +66,7 @@ let settingsService = {
 			cache.setCache('truco-settings', {
 				theme: type === 'THEME' ? data : settings.theme,
 				darkMode: type === 'DARK' ? data : settings.darkMode,
+				showHistory: type === 'SHOW_HISTORY' ? data : settings.showHistory,
 				language: type === 'LANG' ? data : settings.language,
 				version: type === 'VERSION' ? data : settings.version,
 				author: type === 'AUTHOR' ? data : settings.author

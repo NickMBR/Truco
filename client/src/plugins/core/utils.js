@@ -15,6 +15,14 @@ const utilities = {
 			return ''
 		}
 	},
+	formatDateHour(value) {
+		if (moment(value).isValid()) {
+			return moment(value).format('DD/MM/YYYY HH:mm')
+		}
+		else {
+			return ''
+		}
+	},
 	replaceAll(source, target, replacement) {
 		return source.replace(new RegExp(target, 'g'), replacement)
 	},
@@ -35,6 +43,15 @@ const utilities = {
 		}
 		else {
 			return source
+		}
+	},
+	formatLength(source, length, shouldAddDots) {
+		if (!this.isEmpty(source)) {
+			let data = source.toString()
+			return data.length > length ? `${data.substring(0, length)}${shouldAddDots ? '..' : ''}` : data
+		}
+		else {
+			return ''
 		}
 	}
 }

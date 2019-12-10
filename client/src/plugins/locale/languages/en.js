@@ -24,11 +24,16 @@ export default {
 		details: 'Details',
 		stats: 'Stats',
 		nice: 'Nice!',
-		history: 'History'
+		history: 'History',
+		point: 'Point',
+		points: 'Points',
+		score: 'Score',
+		scored: 'Scored'
 	},
 	game: {
 		teamA: 'Us',
-		teamB: 'Them'
+		teamB: 'Them',
+		changedName: 'Changed the name to'
 	},
 	menu: {
 		home: 'Home',

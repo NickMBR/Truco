@@ -135,6 +135,10 @@ export default {
 				if (!this.$utils.isEmpty(localSettings.darkMode)) {
 					this.darkMode = localSettings.darkMode
 				}
+
+				if (!this.$utils.isEmpty(localSettings.showHistory)) {
+					this.showMatchHistory = localSettings.showHistory
+				}
 			}
 		},
 		changeTheme(primary, secondary) {
@@ -203,6 +207,9 @@ export default {
 			}
 
 			this.$store.commit('updateColorMode', { darkMode: this.darkMode, theme: this.theme.id })
+		},
+		showMatchHistory() {
+			SettingsService.updateSettings(this.showMatchHistory, 'SHOW_HISTORY')
 		}
 	}
 }

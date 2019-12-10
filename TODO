@@ -1,9 +1,11 @@
 - Save match when someone wins
 	- then reset scores
 	- keep scores from team names
-- Fix undo/redo index storage
-- Implement history page
-- Implenent history setting flag to show
+- Implement ranking page
+	- Check and group matchs by team names
+	- Add score based on team names
+- Add flag to keep name changes from resetting
+- Fix name reset upon reload and check flag above
 
 
 DONES:
@@ -16,3 +18,8 @@ DONES:
 - Add undo/redo on scores for user mistakes
 - Save temporary score, always.
 - Allow team name changes
+- Fix undo/redo index storage
+- Implement history page
+- Implenent history setting flag to show
+- Fix big name strings
+- Fix running match undo/redo header upon reload
