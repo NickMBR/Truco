@@ -29,23 +29,23 @@
 						<v-col sm="12" class="pb-5 text-center">
 							<v-row no-gutters class="noselect text-no-wrap">
 								<v-col sm="5" cols="5">
-									<p class="truco-font sz-title-1 text-capitalize">{{ $utils.formatLength(temporaryMatch.teams.teamOneName, 10, true) }}</p>
+									<p class="mb-0 truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-1' : 'sz-title-05'">{{ $utils.formatLength(temporaryMatch.teams.teamOneName, 10, true) }}</p>
 								</v-col>
 								<v-col sm="2" cols="2">
-									<p class="truco-font sz-title-1">vs</p>
+									<p class="mb-0 truco-font sz-title-1">vs</p>
 								</v-col>
 								<v-col sm="5" cols="5">
-									<p class="truco-font sz-title-1 text-capitalize">{{ $utils.formatLength(temporaryMatch.teams.teamTwoName, 10, true) }}</p>
+									<p class="mb-0 truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-1' : 'sz-title-05'">{{ $utils.formatLength(temporaryMatch.teams.teamTwoName, 10, true) }}</p>
 								</v-col>
 
 								<v-col sm="5" cols="5">
-									<span class="display-3 primary--text">{{ temporaryMatch.teams.teamOneScore }}</span>
+									<span class="display-2 primary--text">{{ temporaryMatch.teams.teamOneScore }}</span>
 								</v-col>
 								<v-col sm="2" cols="2">
 									<v-divider vertical></v-divider>
 								</v-col>
 								<v-col sm="5" cols="5">
-									<span class="display-3 primary--text">{{ temporaryMatch.teams.teamTwoScore }}</span>
+									<span class="display-2 primary--text">{{ temporaryMatch.teams.teamTwoScore }}</span>
 								</v-col>
 							</v-row>
 						</v-col>
@@ -70,6 +70,10 @@
 										</p>
 									</v-list-item-subtitle>
 								</v-list-item-content>
+
+								<v-list-item-action v-if="keepNames">
+									<v-btn small color="primary" icon @click.stop="setTeamNamesAndPlay(match)"><v-icon>mdi-play</v-icon></v-btn>
+								</v-list-item-action>
 							</v-list-item>
 						</v-list>
 
@@ -77,23 +81,23 @@
 							<v-col sm="12" class="pb-5 text-center">
 								<v-row no-gutters class="noselect text-no-wrap">
 									<v-col sm="5" cols="5">
-										<p class="truco-font sz-title-1 text-capitalize">{{ $utils.formatLength(match.teamOneName, 10, true) }}</p>
+										<p class="mb-0 truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-1' : 'sz-title-05'">{{ $utils.formatLength(match.teamOneName, 10, true) }}</p>
 									</v-col>
 									<v-col sm="2" cols="2">
-										<p class="truco-font sz-title-1">vs</p>
+										<p class="mb-0 truco-font sz-title-1">vs</p>
 									</v-col>
 									<v-col sm="5" cols="5">
-										<p class="truco-font sz-title-1 text-capitalize">{{ $utils.formatLength(match.teamTwoName, 10, true) }}</p>
+										<p class="mb-0 truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-1' : 'sz-title-05'">{{ $utils.formatLength(match.teamTwoName, 10, true) }}</p>
 									</v-col>
 
 									<v-col sm="5" cols="5">
-										<span class="display-3 primary--text">{{ match.teamOneScore }}</span>
+										<span class="display-2 primary--text">{{ match.teamOneScore }}</span>
 									</v-col>
 									<v-col sm="2" cols="2">
 										<v-divider vertical></v-divider>
 									</v-col>
 									<v-col sm="5" cols="5">
-										<span class="display-3 primary--text">{{ match.teamTwoScore }}</span>
+										<span class="display-2 primary--text">{{ match.teamTwoScore }}</span>
 									</v-col>
 								</v-row>
 							</v-col>
@@ -110,12 +114,14 @@
 <script>
 import moment from 'moment'
 import matchService from '../../services/match'
+import settingsService from '../../services/settings'
 
 export default {
 	data() {
 		return {
 			temporaryMatch: [],
-			matchHistory: []
+			matchHistory: [],
+			keepNames: false
 		}
 	},
 	mounted() {
@@ -167,8 +173,26 @@ export default {
 					})
 
 					this.matchHistory = lastMatchs
+
+					return settingsService.getSettings().then(result => {
+						if (result && result.author) {
+							if (!this.$utils.isEmpty(result.keepNames)) {
+								this.keepNames = result.keepNames
+							}
+						}
+					})
 				}
 			}).catch(() => {})
+		},
+		setTeamNamesAndPlay(data) {
+			if (data && data.winner && data.loser) {
+				matchService.saveMatchTeamNames({
+					teamOneName: data.teamOneName,
+					teamTwoName: data.teamTwoName
+				}).then(() => {
+					this.$router.push('/play')
+				}).catch(() => {})
+			}
 		},
 		processDateAgo(date) {
 			if (date) {

@@ -31,21 +31,21 @@
 							<v-col sm="5" cols="5" @click="changeName('TEAM_ONE', true)" style="cursor: pointer;">
 								<v-badge v-model="teamOneBadge" class="align-self-center" color="primary" v-show="!teamOneChangingName">
 									<template v-slot:badge>
-										<span :class="$store.getters.colorMode ? 'grey--text text--darken-4' : 'white--text'">{{ teamOneBadgeScore }}</span>
+										<span :class="$store.getters.colorMode ? 'grey--text text--darken-4' : 'white--text'"><strong>{{ teamOneBadgeScore }}</strong></span>
 									</template>
-									<p class="truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-1'">{{ $utils.formatLength(teamOneName, 10, true) }}</p>
+									<p class="mb-0 truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-05'">{{ $utils.formatLength(teamOneName, 10, true) }}</p>
 								</v-badge>
 								<v-text-field solo :class="$vuetify.breakpoint.mdAndUp ? 'pl-5' : ''" v-show="teamOneChangingName" v-model="teamOneNameChange" :rules="[$rules.required, $rules.alphaNumeric]" @blur="saveNameChange('TEAM_ONE')"></v-text-field>
 							</v-col>
 							<v-col sm="2" cols="2">
-								<p class="truco-font" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-1'">vs</p>
+								<p class="mb-0 truco-font" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-05'">vs</p>
 							</v-col>
 							<v-col sm="5" cols="5" @click="changeName('TEAM_TWO', true)" style="cursor: pointer;">
 								<v-badge v-model="teamTwoBadge" class="align-self-center" color="primary" v-show="!teamTwoChangingName">
 									<template v-slot:badge>
-										<span :class="$store.getters.colorMode ? 'grey--text text--darken-4' : 'white--text'">{{ teamTwoBadgeScore }}</span>
+										<span :class="$store.getters.colorMode ? 'grey--text text--darken-4' : 'white--text'"><strong>{{ teamTwoBadgeScore }}</strong></span>
 									</template>
-									<p class="truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-1'">{{ $utils.formatLength(teamTwoName, 10, true) }}</p>
+									<p class="mb-0 truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-05'">{{ $utils.formatLength(teamTwoName, 10, true) }}</p>
 								</v-badge>
 								<v-text-field solo :class="$vuetify.breakpoint.mdAndUp ? 'pl-5' : ''" v-show="teamTwoChangingName" v-model="teamTwoNameChange" :rules="[$rules.required, $rules.alphaNumeric]" @blur="saveNameChange('TEAM_TWO')"></v-text-field>
 							</v-col>
@@ -199,25 +199,12 @@ export default {
 	},
 	mounted() {
 		this.loadTemporaryMatch()
-		this.getSettings()
 	},
 	beforeDestroy() {
 		window.removeEventListener('beforeunload', this.saveRunningMatch)
 		this.saveRunningMatch()
 	},
 	methods: {
-		async getSettings() {
-			let localSettings = await settingsService.getSettings()
-			if (localSettings && localSettings.author) {
-				if (!this.$utils.isEmpty(localSettings.showHistory)) {
-					this.showMatchHistory = localSettings.showHistory
-				}
-
-				if (!this.$utils.isEmpty(localSettings.keepNames)) {
-					this.keepNames = localSettings.keepNames
-				}
-			}
-		},
 		formatScoreMode(mode) {
 			if (mode === 0) {
 				return 1
@@ -411,36 +398,50 @@ export default {
 				matchService.saveRunningMatch(this.matchHistory)
 			}
 		},
+		setHardResetNames() {
+			if (this.teamOneName === 'A') {
+				this.teamOneName = this.$t('game.teamA')
+			}
+			if (this.teamTwoName === 'B') {
+				this.teamTwoName = this.$t('game.teamB')
+			}
+			this.loadSavedMatchs()
+		},
 		setDefaultNames() {
-			this.$nextTick(async () => {
-				if (this.keepNames) {
-					matchService.getMatchTeamNames().then(result => {
-						if (result && result.teamOneName && result.teamTwoName) {
-							this.teamOneName = result.teamOneName
-							this.teamTwoName = result.teamTwoName
-							this.loadSavedMatchs()
+			settingsService.getSettings().then(result => {
+				if (result && result.author) {
+					if (!this.$utils.isEmpty(result.showHistory)) {
+						this.showMatchHistory = result.showHistory
+					}
+
+					if (!this.$utils.isEmpty(result.keepNames)) {
+						this.keepNames = result.keepNames
+					}
+
+					this.$nextTick(async () => {
+						if (this.keepNames) {
+							matchService.getMatchTeamNames().then(result => {
+								if (result && result.teamOneName && result.teamTwoName) {
+									this.teamOneName = result.teamOneName
+									this.teamTwoName = result.teamTwoName
+									this.loadSavedMatchs()
+								}
+							}).catch(error => {
+								if (error && error.toString().includes('NO_TEAM_NAMES_SAVED')) {
+									this.setHardResetNames()
+								}
+							})
 						}
-					}).catch(error => {
-						if (error && error.toString().includes('NO_TEAM_NAMES_SAVED')) {
-							if (this.teamOneName === 'A') {
-								this.teamOneName = this.$t('game.teamA')
-							}
-							if (this.teamTwoName === 'B') {
-								this.teamTwoName = this.$t('game.teamB')
-							}
-							this.loadSavedMatchs()
+						else {
+							this.setHardResetNames()
 						}
 					})
 				}
 				else {
-					if (this.teamOneName === 'A') {
-						this.teamOneName = this.$t('game.teamA')
-					}
-					if (this.teamTwoName === 'B') {
-						this.teamTwoName = this.$t('game.teamB')
-					}
-					this.loadSavedMatchs()
+					this.setHardResetNames()
 				}
+			}).catch(() => {
+				this.setHardResetNames()
 			})
 		},
 		loadTemporaryMatch() {

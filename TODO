@@ -2,6 +2,7 @@ TODO:
 - Clean code
 - Update version
 - Upload?
+- Implement specific hands with animations/colors (11-11 hand, 11-0 hand, etc..)
 
 DONES:
 - Add § translate functionality to alerts
@@ -26,3 +27,4 @@ DONES:
 	- Add score based on team names
 - Add flag to keep name changes from resetting
 - Fix name reset upon reload and check flag above
+- Implement load names by the match history page (load to cache -> play page)

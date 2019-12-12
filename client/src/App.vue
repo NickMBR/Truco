@@ -118,11 +118,11 @@ export default {
 }
  
 ::-webkit-scrollbar-thumb {
-  background: #9554E8; 
+  background: #181A1C; 
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #7743D2; 
+  background: #282A2E; 
 }
 
 .v-sheet--offset {
