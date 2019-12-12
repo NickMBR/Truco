@@ -123,7 +123,7 @@ export default {
 	methods: {
 		async getSettings() {
 			let localSettings = await SettingsService.getSettings()
-			if (localSettings && localSettings.version) {
+			if (localSettings && localSettings.author) {
 				if (localSettings.language) {
 					for (let language of this.languages) {
 						if (language.id === localSettings.language) {

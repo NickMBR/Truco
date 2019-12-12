@@ -9,7 +9,7 @@ let settingsService = {
 			let settings = []
 			Promise.resolve().then(() => {
 				return cache.getCache('truco-settings').then(result => {
-					if (result && result.version) {
+					if (result && result.author) {
 						settings = result
 					}
 				}).catch(async error => {
@@ -35,7 +35,6 @@ let settingsService = {
 							showHistory: true,
 							keepNames: true,
 							language: setLang,
-							version: '0.0.1',
 							author: 'Nicolas Mello'
 						}
 
@@ -52,7 +51,7 @@ let settingsService = {
 	async updateSettings(data, type) {
 		let settings = await this.getSettings()
 
-		if (settings.version && !utils.isEmpty(data) && type) {
+		if (settings.author && !utils.isEmpty(data) && type) {
 			if (type === 'LANG') {
 				if (data.includes('pt')) {
 					moment.locale('pt')
@@ -68,7 +67,6 @@ let settingsService = {
 				showHistory: type === 'SHOW_HISTORY' ? data : settings.showHistory,
 				keepNames: type === 'KEEP_NAMES' ? data : settings.keepNames,
 				language: type === 'LANG' ? data : settings.language,
-				version: type === 'VERSION' ? data : settings.version,
 				author: type === 'AUTHOR' ? data : settings.author
 			})
 		}

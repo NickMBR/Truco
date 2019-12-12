@@ -208,7 +208,7 @@ export default {
 	methods: {
 		async getSettings() {
 			let localSettings = await settingsService.getSettings()
-			if (localSettings && localSettings.version) {
+			if (localSettings && localSettings.author) {
 				if (!this.$utils.isEmpty(localSettings.showHistory)) {
 					this.showMatchHistory = localSettings.showHistory
 				}

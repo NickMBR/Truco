@@ -33,7 +33,7 @@ export default {
 		},
 		async getSettings() {
 			let localSettings = await SettingsService.getSettings()
-			if (localSettings && localSettings.version) {
+			if (localSettings && localSettings.author) {
 				if (localSettings.language) {
 					this.$i18n.locale = localSettings.language
 					if (localSettings.language.includes('pt')) {
