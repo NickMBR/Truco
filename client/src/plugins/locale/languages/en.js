@@ -104,6 +104,9 @@ export default {
 		pages: {
 			P403: 'Access Denied',
 			P404: 'Route Undefined'
+		},
+		content: {
+			noTeams: 'There are no teams to display.'
 		}
 	},
 	alerts: {

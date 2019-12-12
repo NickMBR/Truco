@@ -107,6 +107,10 @@
 					</template>
 				</v-card>
 			</v-col>
+
+			<v-col sm="12" cols="12" class="pa-5" v-if="$utils.isEmpty(temporaryMatch.id) && matchHistory.length == 0">
+				<v-alert type="info" color="primary" text>{{ $t('errors.content.noTeams') }}</v-alert>
+			</v-col>
 		</v-row>
 	</v-container>
 </template>

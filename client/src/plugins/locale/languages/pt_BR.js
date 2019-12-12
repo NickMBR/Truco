@@ -104,6 +104,9 @@ export default {
 		pages: {
 			P403: 'Acesso Negado',
 			P404: 'Rota Indefinida'
+		},
+		content: {
+			noTeams: 'Não há times para mostrar.'
 		}
 	},
 	alerts: {
