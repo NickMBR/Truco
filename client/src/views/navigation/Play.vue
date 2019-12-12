@@ -202,7 +202,6 @@ export default {
 		this.getSettings()
 	},
 	beforeDestroy() {
-		console.log('MATCH NOT SAVED..')
 		window.removeEventListener('beforeunload', this.saveRunningMatch)
 		this.saveRunningMatch()
 	},
@@ -361,7 +360,6 @@ export default {
 							teamTwoScore: this.teamTwoScore
 						}
 					})
-					console.log('SAVE NAME CHANGE', this.matchHistory)
 
 					if (team === 'TEAM_ONE') {
 						this.teamOneName = this.teamOneNameChange
@@ -382,7 +380,7 @@ export default {
 								teamTwoName: this.teamTwoNameChange || this.teamTwoName
 							}).then(() => {
 								this.loadSavedMatchs()
-							})
+							}).catch(() => {})
 						}
 					})
 				}
@@ -410,7 +408,6 @@ export default {
 		},
 		saveRunningMatch() {
 			if (this.matchHistory && this.matchHistory.length > 0) {
-				console.log('SHOULD SAVE MATCH', this.matchHistory)
 				matchService.saveRunningMatch(this.matchHistory)
 			}
 		},
@@ -448,13 +445,11 @@ export default {
 		},
 		loadTemporaryMatch() {
 			matchService.getRunningMatch().then(match => {
-				console.log('SHOULD LOAD MATCH', match)
 				if (match && match.length > 0) {
 					let data = match[match.length - 1]
 					this.matchHistory = match
 
 					if (data && data.teams) {
-						console.log('HISTORY HEADER', data.matchHistoryHeader, data.teams)
 						this.matchHistoryHeader = data.matchHistoryHeader
 
 						if (this.matchHistoryHeader != 0) {
@@ -477,7 +472,6 @@ export default {
 				}
 			}).catch(error => {
 				this.setDefaultNames()
-				console.log('DOES NOT HAVE A MATCH?', error)
 			})
 		},
 		loadSavedMatchs() {
@@ -533,9 +527,8 @@ export default {
 							this.teamTwoBadge = true
 						}
 					}
-					console.log('TEAM HISTORY', this.matchTeamsHistory)
 				}
-			})
+			}).catch(() => {})
 		},
 		resetMatch() {
 			this.matchHistory = []
@@ -549,11 +542,8 @@ export default {
 
 			// REMOVE SAVED MATCH
 			matchService.removeRunningMatch().then(() => {
-				console.log('MATCH RESETTED')
 				this.setDefaultNames()
-			}).catch(error => {
-				console.log('REMOVE MATCH ERROR?', error)
-			})
+			}).catch(() => {})
 		},
 		getMatchPointsHistory() {
 			if (this.matchHistory && this.matchHistory.length > 0) {
@@ -569,7 +559,6 @@ export default {
 			}
 		},
 		setMatchToHistory(data, type) {
-			console.log('MATCH DATA', data)
 			let teamData = ''
 			if (data && data.teamAdded) {
 				teamData = data.teamAdded
@@ -609,7 +598,6 @@ export default {
 					this.matchHistoryHeader = matchs.length
 				}
 
-				console.log('UNDO MATCHS', this.matchHistoryHeader, matchs.length)
 				this.setMatchToHistory(matchs[matchs.length - this.matchHistoryHeader], 'UNDO')
 
 				if (this.matchHistoryHeader != 0) {
@@ -627,7 +615,6 @@ export default {
 					this.matchHistoryHeader -= 1
 				}
 
-				console.log('UNDO MATCHS', this.matchHistoryHeader, matchs.length)
 				this.setMatchToHistory(matchs[this.matchHistoryHeader != 0 ? (matchs.length - this.matchHistoryHeader) - 1 : matchs.length - 1], 'REDO')
 			}
 		}
@@ -642,11 +629,10 @@ export default {
 				this.$store.dispatch('setAction', '')
 			}
 			else if (this.$store.getters.action == 'SAVE_AND_RESET_MATCH') {
-				console.log('SHOULD SAVE FINISHED MATCH', this.matchHistory)
 				matchService.saveFinishedMatch(this.matchHistory).then(() => {
 					this.resetMatch()
 					this.$store.dispatch('setAction', '')
-				})
+				}).catch(() => {})
 			}
 		}
 	}
