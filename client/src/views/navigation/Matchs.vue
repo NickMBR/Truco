@@ -10,7 +10,7 @@
 			<v-col sm="12" cols="12" class="pa-5" v-if="temporaryMatch && temporaryMatch.id">
 				<v-card>
 					<v-toolbar color="primary" :class="$store.getters.colorMode ? 'grey--text text--darken-4' : 'white--text'">
-						<v-toolbar-title class="">Partidas em Andamento</v-toolbar-title>
+						<v-toolbar-title class="">{{ $t('game.runningMatchs') }}</v-toolbar-title>
 					</v-toolbar>
 					<v-list class="py-0">
 						<v-list-item>
@@ -56,7 +56,7 @@
 			<v-col sm="12" cols="12" class="pa-5" v-if="matchHistory && matchHistory.length > 0">
 				<v-card>
 					<v-toolbar color="primary" :class="$store.getters.colorMode ? 'grey--text text--darken-4' : 'white--text'">
-						<v-toolbar-title class="">Partidas Anteriores</v-toolbar-title>
+						<v-toolbar-title class="">{{ $t('game.previousMatchs') }}</v-toolbar-title>
 					</v-toolbar>
 
 					<template v-for="(match, index) in matchHistory">
@@ -66,7 +66,7 @@
 									<v-list-item-subtitle class="caption">
 										<p class="mb-0">
 											<v-icon size="12" class="">mdi-calendar-today</v-icon>
-											{{ $utils.formatDateHour(match[match.length - 1].date) }} {{ '(' + processDateAgo(match[match.length - 1].date) + ')' }}
+											{{ $utils.formatDateHour(match.date) }} {{ '(' + processDateAgo(match.date) + ')' }}
 										</p>
 									</v-list-item-subtitle>
 								</v-list-item-content>
@@ -77,27 +77,29 @@
 							<v-col sm="12" class="pb-5 text-center">
 								<v-row no-gutters class="noselect text-no-wrap">
 									<v-col sm="5" cols="5">
-										<p class="truco-font sz-title-1 text-capitalize">{{ $utils.formatLength(match[match.length - 1].teams.teamOneName, 10, true) }}</p>
+										<p class="truco-font sz-title-1 text-capitalize">{{ $utils.formatLength(match.teamOneName, 10, true) }}</p>
 									</v-col>
 									<v-col sm="2" cols="2">
 										<p class="truco-font sz-title-1">vs</p>
 									</v-col>
 									<v-col sm="5" cols="5">
-										<p class="truco-font sz-title-1 text-capitalize">{{ $utils.formatLength(match[match.length - 1].teams.teamTwoName, 10, true) }}</p>
+										<p class="truco-font sz-title-1 text-capitalize">{{ $utils.formatLength(match.teamTwoName, 10, true) }}</p>
 									</v-col>
 
 									<v-col sm="5" cols="5">
-										<span class="display-3 primary--text">{{ match[match.length - 1].teams.teamOneScore }}</span>
+										<span class="display-3 primary--text">{{ match.teamOneScore }}</span>
 									</v-col>
 									<v-col sm="2" cols="2">
 										<v-divider vertical></v-divider>
 									</v-col>
 									<v-col sm="5" cols="5">
-										<span class="display-3 primary--text">{{ match[match.length - 1].teams.teamTwoScore }}</span>
+										<span class="display-3 primary--text">{{ match.teamTwoScore }}</span>
 									</v-col>
 								</v-row>
 							</v-col>
 						</v-row>
+
+						<v-divider :key="index + '_div'"></v-divider>
 					</template>
 				</v-card>
 			</v-col>
@@ -126,15 +128,45 @@ export default {
 				if (match && match.length > 0) {
 					let data = match[match.length - 1]
 					this.temporaryMatch = data
-					console.log('TEMP MATCH', data)
 				}
 			}).catch(() => {})
 		},
 		loadSavedMatch() {
+			this.matchHistory = []
 			matchService.getSavedMatchs().then(matchs => {
 				if (matchs && matchs.length > 0) {
-					this.matchHistory = matchs
-					console.log('SAVED MATCHS', matchs)
+					let lastMatchs = []
+					for (let match of matchs) {
+						if (match && match.length > 0) {
+							let tempMatch = match[match.length - 1]
+							if (tempMatch && tempMatch.teams) {
+								let winnerTeam = ''
+								if (tempMatch.teams.teamOneScore > tempMatch.teams.teamTwoScore) {
+									winnerTeam = 'TEAM_ONE'
+								}
+								else {
+									winnerTeam = 'TEAM_TWO'
+								}
+
+								lastMatchs.push({
+									id: tempMatch.id,
+									date: tempMatch.date,
+									teamOneName: tempMatch.teams.teamOneName,
+									teamOneScore: tempMatch.teams.teamOneScore,
+									teamTwoName: tempMatch.teams.teamTwoName,
+									teamTwoScore: tempMatch.teams.teamTwoScore,
+									winner: winnerTeam === 'TEAM_ONE' ? tempMatch.teams.teamOneName : winnerTeam === 'TEAM_TWO' ? tempMatch.teams.teamTwoName : '',
+									loser: winnerTeam === 'TEAM_ONE' ? tempMatch.teams.teamTwoName : winnerTeam === 'TEAM_TWO' ? tempMatch.teams.teamOneName : ''
+								})
+							}
+						}
+					}
+
+					lastMatchs = lastMatchs.sort((a, b) => {
+						return new Date(b.date) - new Date(a.date)
+					})
+
+					this.matchHistory = lastMatchs
 				}
 			}).catch(() => {})
 		},

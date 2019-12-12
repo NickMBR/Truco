@@ -28,12 +28,20 @@ export default {
 		point: 'Ponto',
 		points: 'Pontos',
 		score: 'Placar',
-		scored: 'Ganhou'
+		scored: 'Ganhou',
+		table: 'Tabela',
+		wins: 'Vitórias',
+		losses: 'Derrotas',
+		winLossRatio: 'V/D',
+		name: 'Nome',
+		rank: 'Pos.'
 	},
 	game: {
 		teamA: 'Nós',
 		teamB: 'Eles',
-		changedName: 'Trocou o nome para'
+		changedName: 'Trocou o nome para',
+		runningMatchs: 'Partidas em Andamento',
+		previousMatchs: 'Partidas Anteriores'
 	},
 	menu: {
 		home: 'Início',
@@ -42,7 +50,9 @@ export default {
 		exit: 'Sair',
 		tools: 'Ferramentas',
 		settings: 'Configurações',
-		matchs: 'Partidas'
+		matchs: 'Partidas',
+		teams: 'Times',
+		ranking: 'Classificação'
 	},
 	actions: {
 		start: 'Começar',
@@ -58,7 +68,8 @@ export default {
 		language: 'Idioma',
 		theme: 'Tema',
 		darkMode: 'Modo Escuro',
-		showMatchHistory: 'Mostrar Histórico da Partida'
+		showMatchHistory: 'Mostrar Histórico da Partida',
+		keepTeamNames: 'Mantes Nome dos Times'
 	},
 	time: {
 		day: 'Dia',

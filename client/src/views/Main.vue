@@ -79,6 +79,11 @@ export default {
 					icon: 'mdi-cards-playing-outline'
 				},
 				{
+					title: 'menu.ranking',
+					path: '/ranking',
+					icon: 'mdi-account-group'
+				},
+				{
 					title: 'menu.settings',
 					path: '/settings',
 					icon: 'mdi-settings'
@@ -113,7 +118,6 @@ export default {
 			}
 		},
 		processAction(action) {
-			console.log('DO SOMETHING WITH', action)
 		},
 		changePath(path) {
 			if (this.$route.path !== path) {

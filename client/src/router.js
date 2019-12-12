@@ -44,6 +44,14 @@ const router = new Router({
 						title: 'Matchs'
 					},
 					component: () => import('./views/navigation/Matchs.vue')
+				},
+				{
+					path: '/ranking',
+					name: 'Ranking',
+					meta: {
+						title: 'Ranking'
+					},
+					component: () => import('./views/navigation/Ranking.vue')
 				}
 			]
 		},

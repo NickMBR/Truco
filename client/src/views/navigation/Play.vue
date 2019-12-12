@@ -29,14 +29,24 @@
 					<v-col sm="12" class="pa-5 text-center">
 						<v-row no-gutters class="noselect text-no-wrap">
 							<v-col sm="5" cols="5" @click="changeName('TEAM_ONE', true)" style="cursor: pointer;">
-								<p v-show="!teamOneChangingName" class="truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-1'">{{ $utils.formatLength(teamOneName, 10, true) }}</p>
+								<v-badge v-model="teamOneBadge" class="align-self-center" color="primary" v-show="!teamOneChangingName">
+									<template v-slot:badge>
+										<span :class="$store.getters.colorMode ? 'grey--text text--darken-4' : 'white--text'">{{ teamOneBadgeScore }}</span>
+									</template>
+									<p class="truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-1'">{{ $utils.formatLength(teamOneName, 10, true) }}</p>
+								</v-badge>
 								<v-text-field solo :class="$vuetify.breakpoint.mdAndUp ? 'pl-5' : ''" v-show="teamOneChangingName" v-model="teamOneNameChange" :rules="[$rules.required, $rules.alphaNumeric]" @blur="saveNameChange('TEAM_ONE')"></v-text-field>
 							</v-col>
 							<v-col sm="2" cols="2">
 								<p class="truco-font" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-1'">vs</p>
 							</v-col>
 							<v-col sm="5" cols="5" @click="changeName('TEAM_TWO', true)" style="cursor: pointer;">
-								<p v-show="!teamTwoChangingName" class="truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-1'">{{ $utils.formatLength(teamTwoName, 10, true) }}</p>
+								<v-badge v-model="teamTwoBadge" class="align-self-center" color="primary" v-show="!teamTwoChangingName">
+									<template v-slot:badge>
+										<span :class="$store.getters.colorMode ? 'grey--text text--darken-4' : 'white--text'">{{ teamTwoBadgeScore }}</span>
+									</template>
+									<p class="truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-1'">{{ $utils.formatLength(teamTwoName, 10, true) }}</p>
+								</v-badge>
 								<v-text-field solo :class="$vuetify.breakpoint.mdAndUp ? 'pl-5' : ''" v-show="teamTwoChangingName" v-model="teamTwoNameChange" :rules="[$rules.required, $rules.alphaNumeric]" @blur="saveNameChange('TEAM_TWO')"></v-text-field>
 							</v-col>
 
@@ -168,12 +178,20 @@ export default {
 			matchHistoryHeader: 0,
 			enableRedo: true,
 
+			// TEAM SCORES HISTORY
+			matchTeamsHistory: [],
+			teamOneBadge: false,
+			teamTwoBadge: false,
+			teamOneBadgeScore: 0,
+			teamTwoBadgeScore: 0,
+
 			// ANIMATIONS
 			animateTeamOneScore: true,
 			animateTeamTwoScore: true,
 
 			// SETTINGS
-			showMatchHistory: true
+			showMatchHistory: true,
+			keepNames: true
 		}
 	},
 	created() {
@@ -194,6 +212,10 @@ export default {
 			if (localSettings && localSettings.version) {
 				if (!this.$utils.isEmpty(localSettings.showHistory)) {
 					this.showMatchHistory = localSettings.showHistory
+				}
+
+				if (!this.$utils.isEmpty(localSettings.keepNames)) {
+					this.keepNames = localSettings.keepNames
 				}
 			}
 		},
@@ -301,44 +323,75 @@ export default {
 			}
 			else if (team === 'TEAM_TWO') {
 				this.teamTwoChangingName = shouldEdit
-				this.teamTwoName = this.teamTwoNameChange
+				this.teamTwoNameChange = this.teamTwoName
 			}
 		},
 		saveNameChange(team) {
 			if (!this.$utils.isEmpty(this.teamOneNameChange) || !this.$utils.isEmpty(this.teamTwoNameChange)) {
-				// SET HISTORY
-				this.matchHistory.push({
-					id: Math.random().toString(36).substr(2, 8).toUpperCase(),
-					type: 'NAME',
-					date: moment().format('YYYY-MM-DD HH:mm'),
-					teamAdded: team,
-					teamName: team === 'TEAM_ONE' ? this.teamOneNameChange : this.teamTwoNameChange,
-					teamOldName: team === 'TEAM_ONE' ? this.teamOneName : this.teamTwoName,
-					teamOldScore: null,
-					teamNewScore: null,
-					pointsAdded: null,
-					matchHistoryHeader: this.matchHistoryHeader,
-					teams: {
-						teamOneName: this.teamOneNameChange || this.teamOneName,
-						teamOneScore: this.teamOneScore,
-						teamTwoName: this.teamTwoNameChange || this.teamTwoName,
-						teamTwoScore: this.teamTwoScore
-					}
-				})
-				console.log('SAVE NAME CHANGE', this.matchHistory)
-
+				// CHECK CHANGES
+				let hasChanges = false
 				if (team === 'TEAM_ONE') {
-					this.teamOneName = this.teamOneNameChange
+					if (this.teamOneNameChange !== this.teamOneName) {
+						hasChanges = true
+					}
 				}
 				else if (team === 'TEAM_TWO') {
-					this.teamTwoName = this.teamTwoNameChange
+					if (this.teamTwoNameChange !== this.teamTwoName) {
+						hasChanges = true
+					}
 				}
+				
+				if (hasChanges) {
+					// SET HISTORY
+					this.matchHistory.push({
+						id: Math.random().toString(36).substr(2, 8).toUpperCase(),
+						type: 'NAME',
+						date: moment().format('YYYY-MM-DD HH:mm'),
+						teamAdded: team,
+						teamName: team === 'TEAM_ONE' ? this.teamOneNameChange : this.teamTwoNameChange,
+						teamOldName: team === 'TEAM_ONE' ? this.teamOneName : this.teamTwoName,
+						teamOldScore: null,
+						teamNewScore: null,
+						pointsAdded: null,
+						matchHistoryHeader: this.matchHistoryHeader,
+						teams: {
+							teamOneName: this.teamOneNameChange || this.teamOneName,
+							teamOneScore: this.teamOneScore,
+							teamTwoName: this.teamTwoNameChange || this.teamTwoName,
+							teamTwoScore: this.teamTwoScore
+						}
+					})
+					console.log('SAVE NAME CHANGE', this.matchHistory)
 
-				this.$nextTick(() => {
-					this.teamOneChangingName = false
+					if (team === 'TEAM_ONE') {
+						this.teamOneName = this.teamOneNameChange
+						this.teamOneChangingName = false
+					}
+					else if (team === 'TEAM_TWO') {
+						this.teamTwoName = this.teamTwoNameChange
+						this.teamTwoChangingName = false
+					}
+
+					this.$nextTick(() => {
+						this.teamOneNameChange = ''
+						this.teamTwoNameChange = ''
+
+						if (this.keepNames) {
+							matchService.saveMatchTeamNames({
+								teamOneName: this.teamOneNameChange || this.teamOneName,
+								teamTwoName: this.teamTwoNameChange || this.teamTwoName
+							}).then(() => {
+								this.loadSavedMatchs()
+							})
+						}
+					})
+				}
+				else {
 					this.teamOneNameChange = ''
 					this.teamTwoNameChange = ''
-				})
+					this.teamOneChangingName = false
+					this.teamTwoChangingName = false
+				}
 			}
 		},
 		teamOneClick() {
@@ -362,12 +415,34 @@ export default {
 			}
 		},
 		setDefaultNames() {
-			this.$nextTick(() => {
-				if (this.teamOneName === 'A') {
-					this.teamOneName = this.$t('game.teamA')
+			this.$nextTick(async () => {
+				if (this.keepNames) {
+					matchService.getMatchTeamNames().then(result => {
+						if (result && result.teamOneName && result.teamTwoName) {
+							this.teamOneName = result.teamOneName
+							this.teamTwoName = result.teamTwoName
+							this.loadSavedMatchs()
+						}
+					}).catch(error => {
+						if (error && error.toString().includes('NO_TEAM_NAMES_SAVED')) {
+							if (this.teamOneName === 'A') {
+								this.teamOneName = this.$t('game.teamA')
+							}
+							if (this.teamTwoName === 'B') {
+								this.teamTwoName = this.$t('game.teamB')
+							}
+							this.loadSavedMatchs()
+						}
+					})
 				}
-				if (this.teamTwoName === 'B') {
-					this.teamTwoName = this.$t('game.teamB')
+				else {
+					if (this.teamOneName === 'A') {
+						this.teamOneName = this.$t('game.teamA')
+					}
+					if (this.teamTwoName === 'B') {
+						this.teamTwoName = this.$t('game.teamB')
+					}
+					this.loadSavedMatchs()
 				}
 			})
 		},
@@ -405,6 +480,63 @@ export default {
 				console.log('DOES NOT HAVE A MATCH?', error)
 			})
 		},
+		loadSavedMatchs() {
+			this.teamOneBadge = false
+			this.teamTwoBadge = false
+			this.teamOneBadgeScore = 0
+			this.teamTwoBadgeScore = 0
+
+			matchService.processMatchTeams().then(result => {
+				if (result && Object.keys(result) && Object.keys(result).length > 0) {
+					this.matchTeamsHistory = result
+
+					// CHECK IF BOTH TEAMS EXISTS
+					let teamOneExists = false
+					let teamTwoExists = false
+					let teamsPlayedAgainst = false
+					let teamMatchs = []
+					let alreadySeenMatch = []
+					for (let team of Object.keys(this.matchTeamsHistory)) {
+						if (team === this.teamOneName) {
+							teamOneExists = true
+						}
+
+						if (team === this.teamTwoName) {
+							teamTwoExists = true
+						}
+
+						// NOW CHECK IF BOTH TEAMS PLAYED AGAINST EACH OTHER
+						for (let match of this.matchTeamsHistory[team].matchs) {
+							if ((match.teamOneName === this.teamOneName || match.teamOneName === this.teamTwoName) && (match.teamTwoName === this.teamOneName || match.teamTwoName === this.teamTwoName)) {
+								teamsPlayedAgainst = true
+								if (!alreadySeenMatch.includes(match.id)) {
+									teamMatchs.push(match)
+									alreadySeenMatch.push(match.id)
+								}
+							}
+						}
+					}
+
+					if (teamOneExists && teamTwoExists && teamsPlayedAgainst) {
+						// NOW SET SCORE FOR BOTH TEAMS
+						if (teamMatchs.length > 0) {
+							for (let match of teamMatchs) {
+								if (match.winner === this.teamOneName) {
+									this.teamOneBadgeScore = this.teamOneBadgeScore + 1
+								}
+								if (match.winner === this.teamTwoName) {
+									this.teamTwoBadgeScore = this.teamTwoBadgeScore + 1
+								}
+							}
+
+							this.teamOneBadge = true
+							this.teamTwoBadge = true
+						}
+					}
+					console.log('TEAM HISTORY', this.matchTeamsHistory)
+				}
+			})
+		},
 		resetMatch() {
 			this.matchHistory = []
 			this.winnerTeam = ''
@@ -418,6 +550,7 @@ export default {
 			// REMOVE SAVED MATCH
 			matchService.removeRunningMatch().then(() => {
 				console.log('MATCH RESETTED')
+				this.setDefaultNames()
 			}).catch(error => {
 				console.log('REMOVE MATCH ERROR?', error)
 			})
@@ -456,7 +589,7 @@ export default {
 						date: moment().format('YYYY-MM-DD HH:mm'),
 						teamAdded: teamData,
 						teamName: teamData === 'TEAM_ONE' ? this.teamOneName : this.teamTwoName,
-						teamOldName: team === 'TEAM_ONE' ? this.teamOneName : this.teamTwoName,
+						teamOldName: teamData === 'TEAM_ONE' ? this.teamOneName : this.teamTwoName,
 						teamOldScore: Number(data.teamOldScore),
 						teamNewScore: Number(data.teamNewScore),
 						pointsAdded: data.pointsAdded,

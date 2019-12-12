@@ -45,6 +45,13 @@
 							<v-col cols="8">
 								<v-switch hide-details class="pt-2" color="primary" v-model="showMatchHistory"></v-switch>
 							</v-col>
+
+							<v-col cols="4" class="mt-3">
+								<v-subheader>{{ $t('forms.keepTeamNames') }}</v-subheader>
+							</v-col>
+							<v-col cols="8">
+								<v-switch hide-details class="pt-2" color="primary" v-model="keepNames"></v-switch>
+							</v-col>
 						</v-row>
 					</v-col>
 				</v-row>
@@ -90,7 +97,8 @@ export default {
 				}
 			],
 			darkMode: false,
-			showMatchHistory: true
+			showMatchHistory: true,
+			keepNames: true
 		}
 	},
 	mounted() {
@@ -138,6 +146,10 @@ export default {
 
 				if (!this.$utils.isEmpty(localSettings.showHistory)) {
 					this.showMatchHistory = localSettings.showHistory
+				}
+
+				if (!this.$utils.isEmpty(localSettings.keepNames)) {
+					this.keepNames = localSettings.keepNames
 				}
 			}
 		},
@@ -210,6 +222,9 @@ export default {
 		},
 		showMatchHistory() {
 			SettingsService.updateSettings(this.showMatchHistory, 'SHOW_HISTORY')
+		},
+		keepNames() {
+			SettingsService.updateSettings(this.keepNames, 'KEEP_NAMES')
 		}
 	}
 }

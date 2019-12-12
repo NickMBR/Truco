@@ -146,4 +146,16 @@ export default {
 .truco-font.sz-title-1 {
 	font-size: 36px;
 }
+.truco-font.sz-title-05 {
+	font-size: 28px;
+}
+.truco-font.sz-title-04 {
+	font-size: 22px;
+}
+.truco-font.sz-title-03 {
+	font-size: 18px;
+}
+.truco-font.sz-title-02 {
+	font-size: 12px;
+}
 </style>

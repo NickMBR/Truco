@@ -125,6 +125,147 @@ let matchService = {
 				reject(error)
 			})
 		})
+	},
+	saveMatchTeamNames(data) {
+		return new Promise((resolve, reject) => {
+			if (data && data.teamOneName && data.teamTwoName) {
+				Promise.resolve().then(() => {
+					return cache.setCache('truco-team-names', data, false).catch(error => {
+						throw new Error('CANNOT_SAVE_TEAM_NAMES, ERROR:', error)
+					})
+				}).then(() => {
+					resolve()
+				}).catch(error => {
+					reject(error)
+				})
+			}
+			else {
+				throw new Error('CANNOT_SAVE_TEAM_NAMES_INVALID_DATA')
+			}
+		})
+	},
+	getMatchTeamNames() {
+		return new Promise((resolve, reject) => {
+			let teamNames = []
+			Promise.resolve().then(() => {
+				return cache.getCache('truco-team-names').then(result => {
+					if (result && result.teamOneName && result.teamTwoName) {
+						teamNames = result
+					}
+				}).catch(error => {
+					throw new Error('NO_TEAM_NAMES_SAVED, ERROR:', error)
+				})
+			}).then(() => {
+				resolve(teamNames)
+			}).catch(error => {
+				reject(error)
+			})
+		})
+	},
+	processMatchTeams() {
+		return new Promise((resolve, reject) => {
+			let matchHistory = []
+			let processedTeams = []
+
+			Promise.resolve().then(() => {
+				return this.getSavedMatchs().then(matchs => {
+					if (matchs && matchs.length > 0) {
+						matchHistory = matchs
+					}
+				})
+			}).then(() => {
+				if (matchHistory && matchHistory.length > 0) {
+					let lastMatchs = []
+
+					// CLEAR RESULTS
+					for (let match of matchHistory) {
+						if (match && match.length > 0) {
+							let tempMatch = match[match.length - 1]
+							if (tempMatch && tempMatch.teams) {
+								let winnerTeam = ''
+								if (tempMatch.teams.teamOneScore > tempMatch.teams.teamTwoScore) {
+									winnerTeam = 'TEAM_ONE'
+								}
+								else {
+									winnerTeam = 'TEAM_TWO'
+								}
+
+								lastMatchs.push({
+									id: tempMatch.id,
+									date: tempMatch.date,
+									teamOneName: tempMatch.teams.teamOneName,
+									teamOneScore: tempMatch.teams.teamOneScore,
+									teamTwoName: tempMatch.teams.teamTwoName,
+									teamTwoScore: tempMatch.teams.teamTwoScore,
+									winner: winnerTeam === 'TEAM_ONE' ? tempMatch.teams.teamOneName : winnerTeam === 'TEAM_TWO' ? tempMatch.teams.teamTwoName : '',
+									loser: winnerTeam === 'TEAM_ONE' ? tempMatch.teams.teamTwoName : winnerTeam === 'TEAM_TWO' ? tempMatch.teams.teamOneName : ''
+								})
+							}
+						}
+					}
+
+					let existingTeams = []
+					if (lastMatchs && lastMatchs.length > 0) {
+						// BUILD DEFAULT
+						for (let match of lastMatchs) {
+							if (!existingTeams.includes(match.teamOneName)) {
+								existingTeams.push(match.teamOneName)
+								processedTeams[match.teamOneName] = {
+									name: match.teamOneName,
+									wins: 0,
+									losses: 0,
+									matchs: []
+								}
+							}
+
+							if (!existingTeams.includes(match.teamTwoName)) {
+								existingTeams.push(match.teamTwoName)
+								processedTeams[match.teamTwoName] = {
+									name: match.teamTwoName,
+									wins: 0,
+									losses: 0,
+									matchs: []
+								}
+							}
+						}
+
+						// SET DATA
+						for (let match of lastMatchs) {
+							if (processedTeams[match.teamOneName]) {
+								if (match.winner === match.teamOneName) {
+									processedTeams[match.teamOneName].wins = processedTeams[match.teamOneName].wins + 1
+								}
+								else {
+									processedTeams[match.teamOneName].losses = processedTeams[match.teamOneName].losses + 1
+								}
+
+								processedTeams[match.teamOneName].matchs.push(match)
+							}
+
+							if (processedTeams[match.teamTwoName]) {
+								if (match.winner === match.teamTwoName) {
+									processedTeams[match.teamTwoName].wins = processedTeams[match.teamTwoName].wins + 1
+								}
+								else {
+									processedTeams[match.teamTwoName].losses = processedTeams[match.teamTwoName].losses + 1
+								}
+
+								processedTeams[match.teamTwoName].matchs.push(match)
+							}
+						}
+					}
+
+					return true
+				}
+				else {
+					throw new Error('NO_SAVED_MATCHS_EMPTY')
+				}
+			}).then(() => {
+				resolve(processedTeams)
+			}).catch(error => {
+				reject(error)
+			})
+		})
 	}
 }
 

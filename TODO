@@ -1,12 +1,7 @@
-- Save match when someone wins
-	- then reset scores
-	- keep scores from team names
-- Implement ranking page
-	- Check and group matchs by team names
-	- Add score based on team names
-- Add flag to keep name changes from resetting
-- Fix name reset upon reload and check flag above
-
+TODO:
+- Clean code
+- Update version
+- Upload?
 
 DONES:
 - Add § translate functionality to alerts
@@ -23,3 +18,11 @@ DONES:
 - Implenent history setting flag to show
 - Fix big name strings
 - Fix running match undo/redo header upon reload
+- Save match when someone wins
+	- then reset scores
+	- keep scores from team names
+- Implement ranking page
+	- Check and group matchs by team names
+	- Add score based on team names
+- Add flag to keep name changes from resetting
+- Fix name reset upon reload and check flag above

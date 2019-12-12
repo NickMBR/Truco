@@ -28,12 +28,20 @@ export default {
 		point: 'Point',
 		points: 'Points',
 		score: 'Score',
-		scored: 'Scored'
+		scored: 'Scored',
+		table: 'Table',
+		wins: 'Wins',
+		losses: 'Losses',
+		winLossRatio: 'W/L',
+		name: 'Name',
+		rank: 'Rank'
 	},
 	game: {
 		teamA: 'Us',
 		teamB: 'Them',
-		changedName: 'Changed the name to'
+		changedName: 'Changed the name to',
+		runningMatchs: 'Running Matchs',
+		previousMatchs: 'Previous Matchs'
 	},
 	menu: {
 		home: 'Home',
@@ -42,7 +50,9 @@ export default {
 		exit: 'Exit',
 		tools: 'Tools',
 		settings: 'Settings',
-		matchs: 'Matchs'
+		matchs: 'Matchs',
+		teams: 'Teams',
+		ranking: 'Ranking'
 	},
 	actions: {
 		start: 'Start',
@@ -58,7 +68,8 @@ export default {
 		language: 'Language',
 		theme: 'Theme',
 		darkMode: 'Dark Mode',
-		showMatchHistory: 'Show Match History'
+		showMatchHistory: 'Show Match History',
+		keepTeamNames: 'Keep Team Names'
 	},
 	time: {
 		day: 'Day',
