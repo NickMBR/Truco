@@ -28,7 +28,7 @@
 							</v-col>
 
 							<v-col cols="12" class="mt-12">
-								<p class="grey--text caption mb-0">{{ 'v0.2.0' }}</p>
+								<p class="grey--text caption mb-0">{{ 'v1.0.0' }}</p>
 							</v-col>
 						</v-row>
 					</v-col>
