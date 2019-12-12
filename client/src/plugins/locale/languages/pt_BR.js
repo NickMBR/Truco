@@ -1,7 +1,8 @@
 export default {
 	app: {
 		title: 'Truco',
-		madeBy: 'Feito por'
+		madeBy: 'Feito por',
+		seeOnGithub: 'Veja no Github'
 	},
 	common: {
 		yes: 'Sim',

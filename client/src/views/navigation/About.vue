@@ -7,12 +7,12 @@
 				</v-toolbar>
 			</v-col>
 
-			<v-col sm="12" cols="12" class="mt-12">
+			<v-col sm="12" cols="12">
 				<v-row no-gutters align="center" justify="center">
 					<v-col sm="12" md="6" class="pa-5 text-center">
 						<v-row no-gutters>
 							<v-col cols="12">
-								<img :src="mainLogo" />
+								<img :src="mainLogo" width="192"/>
 							</v-col>
 
 							<v-col cols="12">
@@ -23,12 +23,16 @@
 
 							<v-col cols="12" class="mt-12">
 								<p class="grey--text caption mb-0">{{ $t('app.madeBy') }}:</p>
-								<span class="title text-uppercase primary--text">Niko</span>
-								<span class="title text-uppercase font-weight-light primary--text">Works</span>
+								<a @click="gotoPortfolio()"><span class="title text-uppercase primary--text">Niko</span>
+								<span class="title text-uppercase font-weight-light primary--text">Works</span></a>
+							</v-col>
+
+							<v-col cols="12">
+								<v-btn x-large icon @click="gotoGithub()"><v-icon x-large>mdi-github-circle</v-icon></v-btn>
 							</v-col>
 
 							<v-col cols="12" class="mt-12">
-								<p class="grey--text caption mb-0">{{ 'v1.0.1' }}</p>
+								<p class="grey--text caption mb-0">{{ 'v1.0.2' }}</p>
 							</v-col>
 						</v-row>
 					</v-col>
@@ -45,6 +49,14 @@ export default {
 	data() {
 		return {
 			mainLogo: trucoLogo
+		}
+	},
+	methods: {
+		gotoGithub() {
+			window.open("https://github.com/NickMBR/Truco", '_blank');
+		},
+		gotoPortfolio() {
+			window.open("https://niko.works", '_blank');
 		}
 	}
 }
