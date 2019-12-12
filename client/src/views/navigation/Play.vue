@@ -79,12 +79,6 @@
 										<template v-if="history.type === 'NAME'">
 											{{ `${history.teamOldName} ${$t('game.changedName')} ${history.teamName}` }}
 										</template>
-										<!--<template v-if="history.type === 'UNDO'">
-											{{history.teamName}} UNDONE THE {{ history.pointsAdded }} POINTS RECEIVED
-										</template>
-										<template v-if="history.type === 'REDO'">
-											{{history.teamName}} REGAINED THE {{ history.pointsAdded }} UNDONE POINTS
-										</template>-->
 									</p>
 								</template>
 							</v-col>
@@ -93,29 +87,6 @@
 				</v-row>
 			</v-col>
 		</v-row>
-
-		<!--<v-row no-gutters align="end" style="height: 15%;">
-			<v-col>
-				<div class="overflow-hidden">
-					<v-bottom-navigation v-model="active" :input-value="bottomMenu" grow color="primary">
-						<v-btn>
-							<span>Time 1</span>
-							<v-icon>mdi-account</v-icon>
-						</v-btn>
-
-						<v-btn>
-							<span>Favorites</span>
-							<v-icon>mdi-heart</v-icon>
-						</v-btn>
-
-						<v-btn>
-							<span>Time 2</span>
-							<v-icon>mdi-account</v-icon>
-						</v-btn>
-					</v-bottom-navigation>
-				</div>
-			</v-col>
-		</v-row>-->
 	</v-container>
 </template>
 

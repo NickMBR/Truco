@@ -8,10 +8,6 @@
 			<v-btn icon color="primary" v-if="$route.path === '/play'">
 				<v-icon @click="$store.dispatch('setAlert', { alert: 'RESET_SCORE', data: [] })">mdi-history</v-icon>
 			</v-btn>
-
-			<!--<v-btn icon color="primary" v-if="$route.path === '/play'">
-				<v-icon @click="$store.dispatch('setAlert', { alert: 'SAVE_MATCH', data: [] })">mdi-content-save</v-icon>
-			</v-btn>-->
 		</v-app-bar>
 
 		<v-navigation-drawer app v-model="menu" :mini-variant="mini" clipped width="220" dark :src="bgPhoto">
@@ -30,14 +26,6 @@
 				</v-list-item-group>
 			</v-list>
 		</v-navigation-drawer>
-
-		<!--<v-content>
-			<v-container fluid class="py-0">
-				<v-slide-y-transition mode="out-in">
-					<router-view></router-view>
-				</v-slide-y-transition>
-			</v-container>
-		</v-content>-->
 
 		<v-content>
 			<v-slide-y-transition mode="out-in">
