@@ -42,7 +42,9 @@ export default {
 		teamB: 'Eles',
 		changedName: 'Trocou o nome para',
 		runningMatchs: 'Partidas em Andamento',
-		previousMatchs: 'Partidas Anteriores'
+		previousMatchs: 'Partidas Anteriores',
+		elevenHand: 'Mão de Onze',
+		ironHand: 'Mão de Ferro'
 	},
 	menu: {
 		home: 'Início',
@@ -64,7 +66,8 @@ export default {
 		edit: 'Editar',
 		search: 'Pesquisar',
 		confirm: 'Confirmar',
-		undo: 'Desfazer'
+		undo: 'Desfazer',
+		deleteMatchInfo: 'Apagar Histórico de Partidas'
 	},
 	forms: {
 		language: 'Idioma',
@@ -72,7 +75,9 @@ export default {
 		darkMode: 'Modo Escuro',
 		showMatchHistory: 'Mostrar Histórico da Partida',
 		keepTeamNames: 'Mantes Nome dos Times',
-		teamName: 'Nome do Time'
+		teamName: 'Nome do Time',
+		detect11Hands: 'Detectar Mãos de 11',
+		riskArea: 'Área de Risco'
 	},
 	time: {
 		day: 'Dia',
@@ -117,6 +122,9 @@ export default {
 			save: 'Tem certeza que deseja salvar essa partida?',
 			reset: 'Tem certeza que deseja resetar essa partida?',
 			winner: '§ venceu a partida!'
+		},
+		app: {
+			reset: 'Tem certeza que deseja apagar todos os dados das partidas? Essa ação não pode ser desfeita.'
 		}
 	},
 	$vuetify: {

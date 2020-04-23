@@ -59,6 +59,22 @@
 									</template>
 								</v-switch>
 							</v-col>
+
+							<v-col cols="12" class="pl-5">
+								<v-switch hide-details inset class="pt-3" color="primary" v-model="detect11Hands">
+									<template v-slot:label>
+										<span class="pl-3 body-2">{{ $t('forms.detect11Hands') }}</span>
+									</template>
+								</v-switch>
+							</v-col>
+
+							<v-col cols="12">
+								<v-divider class="my-5"></v-divider>
+							</v-col>
+
+							<v-col cols="12" class="pl-5">
+								<v-btn dark color="red darken-2" @click="$alert('DELETE_MATCH_INFO')">{{ $t('actions.deleteMatchInfo') }}</v-btn>
+							</v-col>
 						</v-row>
 					</v-col>
 				</v-row>
@@ -105,7 +121,8 @@ export default {
 			],
 			darkMode: false,
 			showMatchHistory: true,
-			keepNames: true
+			keepNames: true,
+			detect11Hands: true
 		}
 	},
 	mounted() {
@@ -157,6 +174,10 @@ export default {
 
 				if (!this.$utils.isEmpty(localSettings.keepNames)) {
 					this.keepNames = localSettings.keepNames
+				}
+
+				if (!this.$utils.isEmpty(localSettings.detect11Hands)) {
+					this.detect11Hands = localSettings.detect11Hands
 				}
 			}
 		},
@@ -232,6 +253,9 @@ export default {
 		},
 		keepNames() {
 			SettingsService.updateSettings(this.keepNames, 'KEEP_NAMES')
+		},
+		detect11Hands() {
+			SettingsService.updateSettings(this.detect11Hands, 'DETECT_11_HANDS')
 		}
 	}
 }

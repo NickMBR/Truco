@@ -54,7 +54,22 @@ const matchService = {
 		return new Promise((resolve, reject) => {
 			Promise.resolve().then(() => {
 				return cache.removeCache('truco-running-match').catch(error => {
-					throw new Error('CANNOT_REMOVE_RUNNING_MTACH, ERROR:', error)
+					throw new Error('CANNOT_REMOVE_RUNNING_MATCH, ERROR:', error)
+				})
+			}).then(() => {
+				resolve()
+			}).catch(error => {
+				reject(error)
+			})
+		})
+	},
+	removeAllMatches() {
+		return new Promise((resolve, reject) => {
+			Promise.resolve().then(() => {
+				return cache.removeCache('truco-running-match').then(() => {
+					return cache.removeCache('truco-matchs')
+				}).catch(error => {
+					throw new Error('CANNOT_REMOVE_ALL_MATCHES, ERROR:', error)
 				})
 			}).then(() => {
 				resolve()

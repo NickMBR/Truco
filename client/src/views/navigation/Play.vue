@@ -1,6 +1,14 @@
 <template>
 	<v-container fluid class="pa-0">
-		<v-card elevation="4">
+		<v-card flat color="primary" v-if="onElevenHand || onIronHand">
+			<div class="pt-2 pb-1 text-center">
+				<span :class="$store.getters.colorMode ? active ? 'grey--text text--darken-4' : 'white--text' : $vuetify.theme.dark || active ? 'white--text' : ''">
+					<span class="truco-font sz-title-05">♣ {{ onIronHand ? $t('game.ironHand') : onElevenHand ? $t('game.elevenHand') : 'Invalid' }} ♣</span>
+				</span>
+			</div>
+		</v-card>
+
+		<v-card elevation="4" v-if="!onIronHand">
 			<v-item-group mandatory v-model="toggleScoreMode">
 				<v-row no-gutters align="center" justify="space-between">
 					<v-col v-for="item in scoreItems" :key="item.name" cols="2" md="2">
@@ -86,24 +94,24 @@
 		</v-row>
 
 		<v-dialog v-model="teamChangingName" persistent max-width="400">
-			<v-card flat>
-				<v-card-title>
-					{{ $t('forms.teamName') }}
-				</v-card-title>
+			<v-form @submit.prevent="validateName" @keyup.enter="validateName" ref="nameForm">
+				<v-card flat>
+					<v-card-title>
+						{{ $t('forms.teamName') }}
+					</v-card-title>
 
-				<v-card-text class="py-12 px-4 text-center">
-					<v-form @submit.prevent="validateName" ref="nameForm">
+					<v-card-text class="py-12 px-4 text-center">
 						<v-text-field outlined :label="$t('forms.teamName')" v-model="teamNameChange" maxlength="25" :rules="[$rules.required, $rules.alphaNumeric]"></v-text-field>
-					</v-form>
-				</v-card-text>
+					</v-card-text>
 
-				<v-card-actions class="pa-4">
-					<v-spacer></v-spacer>
+					<v-card-actions class="pa-4">
+						<v-spacer></v-spacer>
 
-					<v-btn :class="$store.getters.colorMode ? 'grey--text text--darken-4' : 'white--text'" color="primary" @click="validateName()">{{ $t('actions.save') }}</v-btn>
-					<v-btn class="" color="" @click="teamChangingName = false">{{ $t('actions.cancel') }}</v-btn>
-				</v-card-actions>
-			</v-card>
+						<v-btn :class="$store.getters.colorMode ? 'grey--text text--darken-4' : 'white--text'" color="primary" @click="validateName()">{{ $t('actions.save') }}</v-btn>
+						<v-btn class="" color="" @click="teamChangingName = false">{{ $t('actions.cancel') }}</v-btn>
+					</v-card-actions>
+				</v-card>
+			</v-form>
 		</v-dialog>
 	</v-container>
 </template>
@@ -112,6 +120,7 @@
 import moment from 'moment'
 import matchService from '../../services/match'
 import settingsService from '../../services/settings'
+// import wakeLockMedia from '../../plugins/core/media'
 
 export default {
 	data() {
@@ -159,6 +168,8 @@ export default {
 			toggleScoreMode: 0,
 			teamOneScore: 0,
 			teamTwoScore: 0,
+			onElevenHand: false,
+			onIronHand: false,
 
 			// HISTORY
 			disableUndo: true,
@@ -178,7 +189,12 @@ export default {
 
 			// SETTINGS
 			showMatchHistory: true,
-			keepNames: true
+			keepNames: true,
+			detect11Hands: true,
+
+			// WAKE LOCK
+			wakeLockVideo: null,
+			wakeLockInstance: null
 		}
 	},
 	created() {
@@ -188,21 +204,80 @@ export default {
 		this.$bus.$on('RESET_MATCH', () => {
 			this.resetMatch()
 		})
+
 		this.$bus.$on('SAVE_AND_RESET_MATCH', () => {
 			matchService.saveFinishedMatch(this.matchHistory).then(() => {
 				this.resetMatch()
 			}).catch(() => {})
 		})
 
+		// LOAD
 		this.loadTemporaryMatch()
+
+		// WAKE LOCK
+		this.requestWakeLock()
+		/*
+		this.wakeLockVideo = document.createElement('video')
+		this.wakeLockVideo.setAttribute('muted', '')
+		this.wakeLockVideo.setAttribute('title', '')
+		this.wakeLockVideo.setAttribute('playsinline', '')
+
+		this.addMediaSource(this.wakeLockVideo, 'webm', wakeLockMedia.webm)
+		this.addMediaSource(this.wakeLockVideo, 'mp4', wakeLockMedia.mp4)
+
+		this.wakeLockVideo.addEventListener('loadedmetadata', () => {
+			if (this.wakeLockVideo.duration <= 1) {
+				this.wakeLockVideo.setAttribute('loop', '') // WEBM
+			}
+			else {
+				// MP4
+				this.wakeLockVideo.addEventListener('timeupdate', () => {
+					if (this.wakeLockVideo.currentTime > 0.5) {
+						this.wakeLockVideo.currentTime = Math.random()
+					}
+				})
+			}
+		})
+
+		this.$nextTick(() => {
+			console.log('VIDEO PLAYING', this.wakeLockVideo)
+			this.wakeLockVideo.play()
+		})
+		*/
 	},
 	beforeDestroy() {
 		this.$bus.$off('RESET_MATCH')
 		this.$bus.$off('SAVE_AND_RESET_MATCH')
+		this.wakeLockVideo = null
+
 		window.removeEventListener('beforeunload', this.saveRunningMatch)
 		this.saveRunningMatch()
 	},
 	methods: {
+		requestWakeLock() {
+			if ('keepAwake' in screen) {
+				screen.keepAwake = true
+			}
+			else if ('wakeLock' in navigator) {
+				if (!this.wakeLockInstance) {
+					navigator.wakeLock.request('screen').then(wakeLock => {
+						this.wakeLockInstance = wakeLock
+						// console.log('WAKELOCK IS ACTIVE')
+					}).catch(() => {
+						// console.log('ERROR ACQUIRING WAKELOCK')
+					})
+				}
+			}
+			else {
+				// console.log('WAKELOCK IS NOT SUPPORTED')
+			}
+		},
+		addMediaSource(element, type, dataURI) {
+			const source = document.createElement('source')
+			source.src = dataURI
+			source.type = `video/${type}`
+			element.appendChild(source)
+		},
 		formatScoreMode(mode) {
 			if (mode === 0) {
 				return 1
@@ -268,6 +343,20 @@ export default {
 					else if (team === 'TEAM_TWO') {
 						this.teamTwoScore = totalScore
 					}
+
+					// CHECK 11
+					if (this.detect11Hands) {
+						if (this.teamOneScore === 11 && this.teamTwoScore === 11) {
+							// IRON HAND
+							this.onIronHand = true
+							this.onElevenHand = false
+						}
+						else if ((this.teamOneScore === 11 && this.teamTwoScore < 11) || (this.teamTwoScore === 11 && this.teamOneScore < 11)) {
+							// 11 HAND
+							this.onElevenHand = true
+							this.onIronHand = false
+						}
+					}
 				}
 			}
 			else {
@@ -287,6 +376,8 @@ export default {
 				teamNewScore: totalScore >= 12 ? 12 : totalScore,
 				pointsAdded: Number(this.formatScoreMode(this.toggleScoreMode)),
 				matchHistoryPointer: this.matchHistoryPointer,
+				onElevenHand: this.onElevenHand,
+				onIronHand: this.onIronHand,
 				teams: {
 					teamOneName: this.teamOneName,
 					teamOneScore: this.teamOneScore,
@@ -348,6 +439,8 @@ export default {
 							teamNewScore: null,
 							pointsAdded: null,
 							matchHistoryPointer: this.matchHistoryPointer,
+							onElevenHand: this.onElevenHand,
+							onIronHand: this.onIronHand,
 							teams: {
 								teamOneName: this.teamOneName,
 								teamOneScore: this.teamOneScore,
@@ -415,6 +508,10 @@ export default {
 						this.keepNames = result.keepNames
 					}
 
+					if (!this.$utils.isEmpty(result.detect11Hands)) {
+						this.detect11Hands = result.detect11Hands
+					}
+
 					this.$nextTick(async () => {
 						if (this.keepNames) {
 							matchService.getMatchTeamNames().then(result => {
@@ -442,6 +539,8 @@ export default {
 			})
 		},
 		loadTemporaryMatch() {
+			this.matchHistory = []
+
 			matchService.getRunningMatch().then(match => {
 				if (match && match.length > 0) {
 					const data = match[match.length - 1]
@@ -449,6 +548,11 @@ export default {
 
 					if (data && data.teams) {
 						this.matchHistoryPointer = data.matchHistoryPointer
+
+						if (this.detect11Hands) {
+							this.onElevenHand = data.onElevenHand
+							this.onIronHand = data.onIronHand
+						}
 
 						const matchs = this.getMatchPointsHistory()
 						let selectedMatch = []
@@ -473,6 +577,7 @@ export default {
 					this.setDefaultNames()
 				}
 			}).catch(() => {
+				this.resetMatch()
 				this.setDefaultNames()
 			})
 		},
@@ -563,31 +668,37 @@ export default {
 			this.teamTwoScore = 0
 			this.matchHistoryPointer = -1
 			this.teamNameChange = ''
+			this.onElevenHand = false
+			this.onIronHand = false
 
 			// REMOVE SAVED MATCH
-			matchService.removeRunningMatch().then(() => {
-				this.setDefaultNames()
+			this.$nextTick(() => {
+				matchService.removeRunningMatch().then(() => {
+					this.setDefaultNames()
 
-				this.matchHistoryPointer++
-				this.matchHistory.push({
-					id: Math.random().toString(36).substr(2, 8).toUpperCase(),
-					type: 'SCORE',
-					date: moment().format('YYYY-MM-DD HH:mm'),
-					teamAdded: 'TEAM_ONE',
-					teamName: this.teamOneName,
-					teamOldName: this.teamOneName,
-					teamOldScore: 0,
-					teamNewScore: 0,
-					pointsAdded: 0,
-					matchHistoryPointer: this.matchHistoryPointer,
-					teams: {
-						teamOneName: this.teamOneName,
-						teamOneScore: this.teamOneScore,
-						teamTwoName: this.teamTwoName,
-						teamTwoScore: this.teamTwoScore
-					}
-				})
-			}).catch(() => {})
+					this.matchHistoryPointer++
+					this.matchHistory.push({
+						id: Math.random().toString(36).substr(2, 8).toUpperCase(),
+						type: 'SCORE',
+						date: moment().format('YYYY-MM-DD HH:mm'),
+						teamAdded: 'TEAM_ONE',
+						teamName: this.teamOneName,
+						teamOldName: this.teamOneName,
+						teamOldScore: 0,
+						teamNewScore: 0,
+						pointsAdded: 0,
+						matchHistoryPointer: this.matchHistoryPointer,
+						onElevenHand: false,
+						onIronHand: false,
+						teams: {
+							teamOneName: this.teamOneName,
+							teamOneScore: this.teamOneScore,
+							teamTwoName: this.teamTwoName,
+							teamTwoScore: this.teamTwoScore
+						}
+					})
+				}).catch(() => {})
+			})
 		},
 		getMatchPointsHistory() {
 			if (this.matchHistory && this.matchHistory.length > 0) {
@@ -610,7 +721,6 @@ export default {
 				if (this.matchHistoryPointer > 0) {
 					this.matchHistory.forEach((history, index) => {
 						if (history.type === 'SCORE' && history.matchHistoryPointer === this.matchHistoryPointer) {
-							console.log('SHOULD REMOVE')
 							this.matchHistory.splice(index, 1)
 						}
 					})
@@ -627,6 +737,24 @@ export default {
 						this.teamOneScore = selectedMatch.teams.teamOneScore
 						this.teamTwoScore = selectedMatch.teams.teamTwoScore
 
+						// CHECK 11
+						if (this.detect11Hands) {
+							if (this.teamOneScore === 11 && this.teamTwoScore === 11) {
+								// IRON HAND
+								this.onIronHand = true
+								this.onElevenHand = false
+							}
+							else if ((this.teamOneScore === 11 && this.teamTwoScore < 11) || (this.teamTwoScore === 11 && this.teamOneScore < 11)) {
+								// 11 HAND
+								this.onElevenHand = true
+								this.onIronHand = false
+							}
+							else {
+								this.onElevenHand = false
+								this.onIronHand = false
+							}
+						}
+
 						this.matchHistory.push({
 							id: Math.random().toString(36).substr(2, 8).toUpperCase(),
 							type: 'UNDO',
@@ -638,6 +766,8 @@ export default {
 							teamNewScore: Number(selectedMatch.teamNewScore),
 							pointsAdded: selectedMatch.pointsAdded,
 							matchHistoryPointer: this.matchHistoryPointer,
+							onElevenHand: this.onElevenHand,
+							onIronHand: this.onIronHand,
 							teams: {
 								teamOneName: this.teamOneName,
 								teamOneScore: this.teamOneScore,

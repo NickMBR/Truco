@@ -15,7 +15,7 @@ const alerts = [
 				type: 'red darken-2',
 				title: 'common.no',
 				action: 'CLOSE_ALERT',
-				dark: false
+				dark: true
 			}
 		],
 		options: {
@@ -34,6 +34,30 @@ const alerts = [
 				title: 'common.ok',
 				action: 'SAVE_AND_RESET_MATCH',
 				dark: false
+			}
+		],
+		options: {
+			persistent: true,
+			width: 400
+		}
+	},
+	{
+		id: 'DELETE_MATCH_INFO',
+		type: 'DANGER',
+		title: 'actions.confirm',
+		description: 'alerts.app.reset',
+		buttons: [
+			{
+				type: 'success',
+				title: 'common.yes',
+				action: 'DELETE_MATCH_INFO',
+				dark: false
+			},
+			{
+				type: 'red darken-2',
+				title: 'common.no',
+				action: 'CLOSE_ALERT',
+				dark: true
 			}
 		],
 		options: {

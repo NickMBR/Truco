@@ -42,7 +42,9 @@ export default {
 		teamB: 'Them',
 		changedName: 'Changed the name to',
 		runningMatchs: 'Running Matchs',
-		previousMatchs: 'Previous Matchs'
+		previousMatchs: 'Previous Matchs',
+		elevenHand: 'Eleven Hand',
+		ironHand: 'Iron Hand'
 	},
 	menu: {
 		home: 'Home',
@@ -64,7 +66,8 @@ export default {
 		edit: 'Edit',
 		search: 'Search',
 		confirm: 'Confirm',
-		undo: 'Undo'
+		undo: 'Undo',
+		deleteMatchInfo: 'Delete Matches History'
 	},
 	forms: {
 		language: 'Language',
@@ -72,7 +75,9 @@ export default {
 		darkMode: 'Dark Mode',
 		showMatchHistory: 'Show Match History',
 		keepTeamNames: 'Keep Team Names',
-		teamName: 'Team Name'
+		teamName: 'Team Name',
+		detect11Hands: 'Detect 11 Hands',
+		riskArea: 'Risk Area'
 	},
 	time: {
 		day: 'Day',
@@ -117,6 +122,9 @@ export default {
 			save: 'Are you sure you want to save this match?',
 			reset: 'Are you sure you want to reset this match?',
 			winner: '§ won the match!'
+		},
+		app: {
+			reset: 'Are you sure you want to delete all the matches information? This action cannot be undone.'
 		}
 	},
 	$vuetify: {

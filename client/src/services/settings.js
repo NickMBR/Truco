@@ -34,6 +34,7 @@ const settingsService = {
 							darkMode: false,
 							showHistory: true,
 							keepNames: true,
+							detect11Hands: true,
 							language: setLang,
 							author: 'Nicolas Mello'
 						}
@@ -66,6 +67,7 @@ const settingsService = {
 				darkMode: type === 'DARK' ? data : settings.darkMode,
 				showHistory: type === 'SHOW_HISTORY' ? data : settings.showHistory,
 				keepNames: type === 'KEEP_NAMES' ? data : settings.keepNames,
+				detect11Hands: type === 'DETECT_11_HANDS' ? data : settings.detect11Hands,
 				language: type === 'LANG' ? data : settings.language,
 				author: type === 'AUTHOR' ? data : settings.author
 			})

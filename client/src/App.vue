@@ -19,7 +19,6 @@ export default {
 	},
 	mounted() {
 		this.getSettings()
-		this.requestWakeLock()
 	},
 	methods: {
 		setTitle() {
@@ -95,19 +94,6 @@ export default {
 			}
 
 			this.$store.commit('updateColorMode', { darkMode: this.$vuetify.theme.dark, theme: theme })
-		},
-		requestWakeLock() {
-			if ('keepAwake' in screen) {
-				screen.keepAwake = true
-			}
-			else if ('wakeLock' in navigator) {
-				navigator.wakeLock.request('screen').then(wakeLock => {
-					// WAKELOCK ACTIVE
-				}).catch(() => {})
-			}
-			else {
-				// WAKELOCK NOT SUPPORTED
-			}
 		}
 	},
 	watch: {
@@ -120,7 +106,7 @@ export default {
 
 <style>
 @font-face {
-	font-family: SmartDatingFont;
+	font-family: TrucoFont;
 	src: url(./assets/fonts/SignPainter-Regular.ttf);
 }
 
@@ -150,7 +136,7 @@ export default {
 }
 
 .truco-font {
-	font-family: SmartDatingFont;
+	font-family: TrucoFont;
 }
 
 .truco-font.sz-title-4 {

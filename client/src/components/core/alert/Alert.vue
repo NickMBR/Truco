@@ -25,6 +25,7 @@
 
 <script>
 import AlertMessages from './alert.messages'
+import MatchService from '../../../services/match'
 
 export default {
 	name: 'truco-alert',
@@ -108,6 +109,10 @@ export default {
 			}
 			else if (val === 'SAVE_AND_RESET_MATCH') {
 				this.$bus.$emit('SAVE_AND_RESET_MATCH')
+				this.dismissAlert()
+			}
+			else if (val === 'DELETE_MATCH_INFO') {
+				MatchService.removeAllMatches().catch(() => {})
 				this.dismissAlert()
 			}
 		}
