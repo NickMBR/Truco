@@ -40,7 +40,6 @@
 <script>
 import backgroundPicture from '../assets/img/dt_bg.jpg'
 import Alert from '../components/core/Alert'
-import SettingsService from '../services/settings'
 
 export default {
 	components: {

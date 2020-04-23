@@ -136,7 +136,7 @@ export default {
 		loadTemporaryMatch() {
 			matchService.getRunningMatch().then(match => {
 				if (match && match.length > 0) {
-					let data = match[match.length - 1]
+					const data = match[match.length - 1]
 					this.temporaryMatch = data
 				}
 			}).catch(() => {})
@@ -146,9 +146,9 @@ export default {
 			matchService.getSavedMatchs().then(matchs => {
 				if (matchs && matchs.length > 0) {
 					let lastMatchs = []
-					for (let match of matchs) {
+					for (const match of matchs) {
 						if (match && match.length > 0) {
-							let tempMatch = match[match.length - 1]
+							const tempMatch = match[match.length - 1]
 							if (tempMatch && tempMatch.teams) {
 								let winnerTeam = ''
 								if (tempMatch.teams.teamOneScore > tempMatch.teams.teamTwoScore) {

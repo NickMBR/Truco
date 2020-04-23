@@ -3,7 +3,7 @@ import coreUtils from '../plugins/core/utils'
 import moment from 'moment'
 
 const utils = coreUtils.utilities
-let settingsService = {
+const settingsService = {
 	getSettings() {
 		return new Promise((resolve, reject) => {
 			let settings = []
@@ -14,7 +14,7 @@ let settingsService = {
 					}
 				}).catch(async error => {
 					if (error && error.toString().includes('CACHE_DOES_NOT_EXISTS')) {
-						let localLang = navigator.language || navigator.userLanguage
+						const localLang = navigator.language || navigator.userLanguage
 						let setLang = 'en'
 
 						if (localLang) {
@@ -49,7 +49,7 @@ let settingsService = {
 		})
 	},
 	async updateSettings(data, type) {
-		let settings = await this.getSettings()
+		const settings = await this.getSettings()
 
 		if (settings.author && !utils.isEmpty(data) && type) {
 			if (type === 'LANG') {

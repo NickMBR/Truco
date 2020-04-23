@@ -17,7 +17,8 @@ const router = new Router({
 					path: '/play',
 					name: 'Play',
 					meta: {
-						title: 'Play'
+						title: 'menu.play',
+						translate: true
 					},
 					component: () => import('./views/navigation/Play.vue')
 				},
@@ -25,7 +26,8 @@ const router = new Router({
 					path: '/settings',
 					name: 'Settings',
 					meta: {
-						title: 'Settings'
+						title: 'menu.settings',
+						translate: true
 					},
 					component: () => import('./views/navigation/Settings.vue')
 				},
@@ -33,7 +35,8 @@ const router = new Router({
 					path: '/about',
 					name: 'About',
 					meta: {
-						title: 'About'
+						title: 'menu.about',
+						translate: true
 					},
 					component: () => import('./views/navigation/About.vue')
 				},
@@ -41,7 +44,8 @@ const router = new Router({
 					path: '/matchs',
 					name: 'Matchs',
 					meta: {
-						title: 'Matchs'
+						title: 'menu.matchs',
+						translate: true
 					},
 					component: () => import('./views/navigation/Matchs.vue')
 				},
@@ -49,7 +53,8 @@ const router = new Router({
 					path: '/ranking',
 					name: 'Ranking',
 					meta: {
-						title: 'Ranking'
+						title: 'menu.ranking',
+						translate: true
 					},
 					component: () => import('./views/navigation/Ranking.vue')
 				}
@@ -59,7 +64,8 @@ const router = new Router({
 			path: '*',
 			name: '404',
 			meta: {
-				title: '404'
+				title: '404',
+				translate: false
 			},
 			component: () => import('./views/errors/404.vue')
 		}

@@ -29,25 +29,23 @@
 					<v-col sm="12" class="pa-5 text-center">
 						<v-row no-gutters class="noselect text-no-wrap">
 							<v-col sm="5" cols="5" @click="changeName('TEAM_ONE', true)" style="cursor: pointer;">
-								<v-badge v-model="teamOneBadge" class="align-self-center" color="primary" v-show="!teamOneChangingName">
+								<v-badge v-model="teamOneBadge" class="align-self-center" color="primary">
 									<template v-slot:badge>
 										<span :class="$store.getters.colorMode ? 'grey--text text--darken-4' : 'white--text'"><strong>{{ teamOneBadgeScore }}</strong></span>
 									</template>
 									<p class="mb-0 truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-05'">{{ $utils.formatLength(teamOneName, 10, true) }}</p>
 								</v-badge>
-								<v-text-field solo :class="$vuetify.breakpoint.mdAndUp ? 'pl-5' : ''" v-show="teamOneChangingName" v-model="teamOneNameChange" :rules="[$rules.required, $rules.alphaNumeric]" @blur="saveNameChange('TEAM_ONE')"></v-text-field>
 							</v-col>
 							<v-col sm="2" cols="2">
 								<p class="mb-0 truco-font" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-05'">vs</p>
 							</v-col>
 							<v-col sm="5" cols="5" @click="changeName('TEAM_TWO', true)" style="cursor: pointer;">
-								<v-badge v-model="teamTwoBadge" class="align-self-center" color="primary" v-show="!teamTwoChangingName">
+								<v-badge v-model="teamTwoBadge" class="align-self-center" color="primary">
 									<template v-slot:badge>
 										<span :class="$store.getters.colorMode ? 'grey--text text--darken-4' : 'white--text'"><strong>{{ teamTwoBadgeScore }}</strong></span>
 									</template>
 									<p class="mb-0 truco-font text-capitalize" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-05'">{{ $utils.formatLength(teamTwoName, 10, true) }}</p>
 								</v-badge>
-								<v-text-field solo :class="$vuetify.breakpoint.mdAndUp ? 'pl-5' : ''" v-show="teamTwoChangingName" v-model="teamTwoNameChange" :rules="[$rules.required, $rules.alphaNumeric]" @blur="saveNameChange('TEAM_TWO')"></v-text-field>
 							</v-col>
 
 							<v-col sm="5" cols="5" @click="teamOneClick()" style="cursor: pointer;" class="pa-5">
@@ -87,6 +85,29 @@
 				</v-row>
 			</v-col>
 		</v-row>
+
+		<v-dialog v-model="teamChangingName" persistent max-width="400">
+			<v-card flat>
+				<v-toolbar dense class="primary">
+					<v-toolbar-title>
+						{{ $t('forms.teamName') }}
+					</v-toolbar-title>
+				</v-toolbar>
+
+				<v-card-text class="py-12 px-4 text-center">
+					<v-form @submit.prevent="validateName" ref="nameForm">
+						<v-text-field outlined :label="$t('forms.teamName')" v-model="teamNameChange" maxlength="25" :rules="[$rules.required, $rules.alphaNumeric]"></v-text-field>
+					</v-form>
+				</v-card-text>
+
+				<v-card-actions class="pa-4">
+					<v-spacer></v-spacer>
+
+					<v-btn dark color="primary" @click="validateName()">{{ $t('actions.save') }}</v-btn>
+					<v-btn dark color="" @click="teamChangingName = false">{{ $t('actions.cancel') }}</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</v-container>
 </template>
 
@@ -131,13 +152,11 @@ export default {
 			],
 
 			// TEAMS
+			teamChangingName: false,
+			teamNameChange: '',
 			winnerTeam: '',
 			teamOneName: 'A',
-			teamOneNameChange: '',
-			teamOneChangingName: false,
 			teamTwoName: 'B',
-			teamTwoNameChange: '',
-			teamTwoChangingName: false,
 
 			// SCORE
 			toggleScoreMode: 0,
@@ -220,7 +239,7 @@ export default {
 			}
 		},
 		sumScore(val, team) {
-			let totalScore = Number(val) + Number(this.formatScoreMode(this.toggleScoreMode))
+			const totalScore = Number(val) + Number(this.formatScoreMode(this.toggleScoreMode))
 
 			if (this.$utils.isEmpty(this.winnerTeam)) {
 				if (totalScore >= 12) {
@@ -233,7 +252,6 @@ export default {
 					}
 
 					this.$store.dispatch('setAlert', { alert: 'MATCH_WINNER', data: this.getWinnerTeam(this.winnerTeam) })
-
 				}
 				else {
 					if (team === 'TEAM_ONE') {
@@ -269,73 +287,73 @@ export default {
 			})
 
 			// RESET SCORE MODE
-			if (this.toggleScoreMode != 0) {
+			if (this.toggleScoreMode !== 0) {
 				this.toggleScoreMode = 0
 			}
 		},
 		changeName(team, shouldEdit) {
 			if (team === 'TEAM_ONE') {
-				this.teamOneChangingName = shouldEdit
-				this.teamOneNameChange = this.teamOneName
+				this.teamChange = team
+				this.teamNameChange = this.teamOneName
 			}
 			else if (team === 'TEAM_TWO') {
-				this.teamTwoChangingName = shouldEdit
-				this.teamTwoNameChange = this.teamTwoName
+				this.teamChange = team
+				this.teamNameChange = this.teamTwoName
 			}
+
+			this.teamChangingName = true
 		},
-		saveNameChange(team) {
-			if (!this.$utils.isEmpty(this.teamOneNameChange) || !this.$utils.isEmpty(this.teamTwoNameChange)) {
+		validateName() {
+			if (this.$refs.nameForm.validate() && !this.$utils.isEmpty(this.teamNameChange)) {
 				// CHECK CHANGES
 				let hasChanges = false
-				if (team === 'TEAM_ONE') {
-					if (this.teamOneNameChange !== this.teamOneName) {
+				if (this.teamChange === 'TEAM_ONE') {
+					if (this.teamNameChange !== this.teamOneName) {
 						hasChanges = true
 					}
 				}
-				else if (team === 'TEAM_TWO') {
-					if (this.teamTwoNameChange !== this.teamTwoName) {
+				else if (this.teamChange === 'TEAM_TWO') {
+					if (this.teamNameChange !== this.teamTwoName) {
 						hasChanges = true
 					}
 				}
-				
+
 				if (hasChanges) {
 					// SET HISTORY
 					this.matchHistory.push({
 						id: Math.random().toString(36).substr(2, 8).toUpperCase(),
 						type: 'NAME',
 						date: moment().format('YYYY-MM-DD HH:mm'),
-						teamAdded: team,
-						teamName: team === 'TEAM_ONE' ? this.teamOneNameChange : this.teamTwoNameChange,
-						teamOldName: team === 'TEAM_ONE' ? this.teamOneName : this.teamTwoName,
+						teamAdded: this.teamChange,
+						teamName: this.teamNameChange,
+						teamOldName: this.teamChange === 'TEAM_ONE' ? this.teamOneName : this.teamTwoName,
 						teamOldScore: null,
 						teamNewScore: null,
 						pointsAdded: null,
 						matchHistoryHeader: this.matchHistoryHeader,
 						teams: {
-							teamOneName: this.teamOneNameChange || this.teamOneName,
+							teamOneName: this.teamNameChange || this.teamOneName,
 							teamOneScore: this.teamOneScore,
-							teamTwoName: this.teamTwoNameChange || this.teamTwoName,
+							teamTwoName: this.teamNameChange || this.teamTwoName,
 							teamTwoScore: this.teamTwoScore
 						}
 					})
 
-					if (team === 'TEAM_ONE') {
-						this.teamOneName = this.teamOneNameChange
-						this.teamOneChangingName = false
+					if (this.teamChange === 'TEAM_ONE') {
+						this.teamOneName = this.teamNameChange
 					}
-					else if (team === 'TEAM_TWO') {
-						this.teamTwoName = this.teamTwoNameChange
-						this.teamTwoChangingName = false
+					else if (this.teamChange === 'TEAM_TWO') {
+						this.teamTwoName = this.teamNameChange
 					}
 
 					this.$nextTick(() => {
-						this.teamOneNameChange = ''
-						this.teamTwoNameChange = ''
+						this.teamChangingName = false
+						this.teamNameChange = ''
 
 						if (this.keepNames) {
 							matchService.saveMatchTeamNames({
-								teamOneName: this.teamOneNameChange || this.teamOneName,
-								teamTwoName: this.teamTwoNameChange || this.teamTwoName
+								teamOneName: this.teamNameChange || this.teamOneName,
+								teamTwoName: this.teamNameChange || this.teamTwoName
 							}).then(() => {
 								this.loadSavedMatchs()
 							}).catch(() => {})
@@ -343,10 +361,8 @@ export default {
 					})
 				}
 				else {
-					this.teamOneNameChange = ''
-					this.teamTwoNameChange = ''
-					this.teamOneChangingName = false
-					this.teamTwoChangingName = false
+					this.teamNameChange = ''
+					this.teamChangingName = false
 				}
 			}
 		},
@@ -376,6 +392,7 @@ export default {
 			if (this.teamTwoName === 'B') {
 				this.teamTwoName = this.$t('game.teamB')
 			}
+
 			this.loadSavedMatchs()
 		},
 		setDefaultNames() {
@@ -418,14 +435,14 @@ export default {
 		loadTemporaryMatch() {
 			matchService.getRunningMatch().then(match => {
 				if (match && match.length > 0) {
-					let data = match[match.length - 1]
+					const data = match[match.length - 1]
 					this.matchHistory = match
 
 					if (data && data.teams) {
 						this.matchHistoryHeader = data.matchHistoryHeader
 
-						if (this.matchHistoryHeader != 0) {
-							let matchs = this.getMatchPointsHistory()
+						if (this.matchHistoryHeader !== 0) {
+							const matchs = this.getMatchPointsHistory()
 							this.setMatchToHistory(matchs[(matchs.length - this.matchHistoryHeader) - 1], 'LOAD')
 						}
 						else {
@@ -442,7 +459,7 @@ export default {
 					this.resetMatch()
 					this.setDefaultNames()
 				}
-			}).catch(error => {
+			}).catch(() => {
 				this.setDefaultNames()
 			})
 		},
@@ -460,9 +477,9 @@ export default {
 					let teamOneExists = false
 					let teamTwoExists = false
 					let teamsPlayedAgainst = false
-					let teamMatchs = []
-					let alreadySeenMatch = []
-					for (let team of Object.keys(this.matchTeamsHistory)) {
+					const teamMatchs = []
+					const alreadySeenMatch = []
+					for (const team of Object.keys(this.matchTeamsHistory)) {
 						if (team === this.teamOneName) {
 							teamOneExists = true
 						}
@@ -472,7 +489,7 @@ export default {
 						}
 
 						// NOW CHECK IF BOTH TEAMS PLAYED AGAINST EACH OTHER
-						for (let match of this.matchTeamsHistory[team].matchs) {
+						for (const match of this.matchTeamsHistory[team].matchs) {
 							if ((match.teamOneName === this.teamOneName || match.teamOneName === this.teamTwoName) && (match.teamTwoName === this.teamOneName || match.teamTwoName === this.teamTwoName)) {
 								teamsPlayedAgainst = true
 								if (!alreadySeenMatch.includes(match.id)) {
@@ -486,7 +503,7 @@ export default {
 					if (teamOneExists && teamTwoExists && teamsPlayedAgainst) {
 						// NOW SET SCORE FOR BOTH TEAMS
 						if (teamMatchs.length > 0) {
-							for (let match of teamMatchs) {
+							for (const match of teamMatchs) {
 								if (match.winner === this.teamOneName) {
 									this.teamOneBadgeScore = this.teamOneBadgeScore + 1
 								}
@@ -509,8 +526,7 @@ export default {
 			this.teamOneScore = 0
 			this.teamTwoScore = 0
 			this.matchHistoryHeader = 0
-			this.teamOneNameChange = ''
-			this.teamTwoNameChange = ''
+			this.teamNameChange = ''
 
 			// REMOVE SAVED MATCH
 			matchService.removeRunningMatch().then(() => {
@@ -519,9 +535,9 @@ export default {
 		},
 		getMatchPointsHistory() {
 			if (this.matchHistory && this.matchHistory.length > 0) {
-				let pointsHistory = []
+				const pointsHistory = []
 
-				for (let match of this.matchHistory) {
+				for (const match of this.matchHistory) {
 					if (match.type === 'SCORE') {
 						pointsHistory.push(match)
 					}
@@ -561,7 +577,7 @@ export default {
 			}
 		},
 		undoScore() {
-			let matchs = this.getMatchPointsHistory()
+			const matchs = this.getMatchPointsHistory()
 			if (matchs && matchs.length > 0) {
 				if (this.matchHistoryHeader < matchs.length) {
 					this.matchHistoryHeader += 1
@@ -572,7 +588,7 @@ export default {
 
 				this.setMatchToHistory(matchs[matchs.length - this.matchHistoryHeader], 'UNDO')
 
-				if (this.matchHistoryHeader != 0) {
+				if (this.matchHistoryHeader !== 0) {
 					this.enableRedo = true
 				}
 				else {
@@ -581,26 +597,26 @@ export default {
 			}
 		},
 		redoScore() {
-			let matchs = this.getMatchPointsHistory()
+			const matchs = this.getMatchPointsHistory()
 			if (matchs && matchs.length > 0) {
 				if (this.matchHistoryHeader > 0) {
 					this.matchHistoryHeader -= 1
 				}
 
-				this.setMatchToHistory(matchs[this.matchHistoryHeader != 0 ? (matchs.length - this.matchHistoryHeader) - 1 : matchs.length - 1], 'REDO')
+				this.setMatchToHistory(matchs[this.matchHistoryHeader !== 0 ? (matchs.length - this.matchHistoryHeader) - 1 : matchs.length - 1], 'REDO')
 			}
 		}
 	},
 	watch: {
 		'$store.getters.action'() {
-			if (this.$store.getters.action == 'RESET_MATCH') {
+			if (this.$store.getters.action === 'RESET_MATCH') {
 				this.resetMatch()
 				this.$store.dispatch('setAction', '')
 			}
-			else if (this.$store.getters.action == 'SAVE_MATCH') {
+			else if (this.$store.getters.action === 'SAVE_MATCH') {
 				this.$store.dispatch('setAction', '')
 			}
-			else if (this.$store.getters.action == 'SAVE_AND_RESET_MATCH') {
+			else if (this.$store.getters.action === 'SAVE_AND_RESET_MATCH') {
 				matchService.saveFinishedMatch(this.matchHistory).then(() => {
 					this.resetMatch()
 					this.$store.dispatch('setAction', '')

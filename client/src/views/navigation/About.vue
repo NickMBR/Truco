@@ -32,7 +32,7 @@
 							</v-col>
 
 							<v-col cols="12" class="mt-12">
-								<p class="grey--text caption mb-0">{{ 'v1.0.2' }}</p>
+								<p class="grey--text caption mb-0">{{ 'v1.1.0' }}</p>
 							</v-col>
 						</v-row>
 					</v-col>
@@ -53,10 +53,10 @@ export default {
 	},
 	methods: {
 		gotoGithub() {
-			window.open("https://github.com/NickMBR/Truco", '_blank');
+			window.open('https://github.com/NickMBR/Truco', '_blank')
 		},
 		gotoPortfolio() {
-			window.open("https://niko.works", '_blank');
+			window.open('https://niko.works', '_blank')
 		}
 	}
 }

@@ -70,7 +70,8 @@ export default {
 		theme: 'Tema',
 		darkMode: 'Modo Escuro',
 		showMatchHistory: 'Mostrar Histórico da Partida',
-		keepTeamNames: 'Mantes Nome dos Times'
+		keepTeamNames: 'Mantes Nome dos Times',
+		teamName: 'Nome do Time'
 	},
 	time: {
 		day: 'Dia',
@@ -118,19 +119,23 @@ export default {
 		}
 	},
 	$vuetify: {
+		badge: 'Distintivo',
 		close: 'Fechar',
 		dataIterator: {
-			pageText: '{0}-{1} de {2}',
 			noResultsText: 'Nenhum registro encontrado',
 			loadingText: 'Carregando itens...'
 		},
 		dataTable: {
 			itemsPerPageText: 'Itens por página:',
 			ariaLabel: {
-				sortDescending: ': Em ordem decrescente. Ative para remover ordenação.',
-				sortAscending: ': Em ordem crescente. Ative para ordernar em ordem decrescente.',
-				sortNone: ': Não ordenado. Ative para ordernar em ordem crescente.'
-			}
+				sortDescending: 'Em ordem decrescente.',
+				sortAscending: 'Em ordem crescente.',
+				sortNone: 'Não ordenado.',
+				activateNone: 'Ative para remover ordenação.',
+				activateDescending: 'Ative para ordernar em ordem decrescente.',
+				activateAscending: 'Ative para ordernar em ordem crescente.'
+			},
+			sortBy: 'Ordernar por'
 		},
 		dataFooter: {
 			itemsPerPageText: 'Itens por página:',
@@ -138,7 +143,8 @@ export default {
 			nextPage: 'Próxima',
 			prevPage: 'Anterior',
 			firstPage: 'Primeira página',
-			lastPage: 'Última página'
+			lastPage: 'Última página',
+			pageText: '{0}-{1} de {2}'
 		},
 		datePicker: {
 			itemsSelected: '{0} selecionado'
@@ -146,10 +152,21 @@ export default {
 		noDataText: 'Nenhum registro encontrado',
 		carousel: {
 			prev: 'Anterior',
-			next: 'Próximo'
+			next: 'Próximo',
+			ariaLabel: {
+				delimiter: 'Slide {0} of {1}'
+			}
 		},
 		calendar: {
 			moreEvents: '{0} mais'
+		},
+		fileInput: {
+			counter: '{0} arquivos',
+			counterSize: '{0} arquivos ({1} no total)'
+		},
+		timePicker: {
+			am: 'AM',
+			pm: 'PM'
 		}
 	}
 }

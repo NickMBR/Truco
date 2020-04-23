@@ -1,7 +1,7 @@
 import cache from '../plugins/core/cache'
-import moment from 'moment'
+// import moment from 'moment'
 
-let matchService = {
+const matchService = {
 	getRunningMatch() {
 		return new Promise((resolve, reject) => {
 			let runningMatch = []
@@ -25,7 +25,7 @@ let matchService = {
 			Promise.resolve().then(() => {
 				if (data && data.length > 0) {
 					let validMatch = true
-					for (let match of data) {
+					for (const match of data) {
 						if (!match.date || !match.teamAdded || !match.teamName) {
 							validMatch = false
 						}
@@ -91,7 +91,7 @@ let matchService = {
 					}
 				}).catch(error => {
 					if (error) {
-						let errorStr = error.toString()
+						const errorStr = error.toString()
 						if (!errorStr.includes('NO_SAVED_MATCHS')) {
 							throw error
 						}
@@ -103,7 +103,7 @@ let matchService = {
 			}).then(() => {
 				if (data && data.length > 0) {
 					let validMatch = true
-					for (let match of data) {
+					for (const match of data) {
 						if (!match.date || !match.teamAdded || !match.teamName) {
 							validMatch = false
 						}
@@ -165,7 +165,7 @@ let matchService = {
 	processMatchTeams() {
 		return new Promise((resolve, reject) => {
 			let matchHistory = []
-			let processedTeams = []
+			const processedTeams = []
 
 			Promise.resolve().then(() => {
 				return this.getSavedMatchs().then(matchs => {
@@ -175,12 +175,12 @@ let matchService = {
 				})
 			}).then(() => {
 				if (matchHistory && matchHistory.length > 0) {
-					let lastMatchs = []
+					const lastMatchs = []
 
 					// CLEAR RESULTS
-					for (let match of matchHistory) {
+					for (const match of matchHistory) {
 						if (match && match.length > 0) {
-							let tempMatch = match[match.length - 1]
+							const tempMatch = match[match.length - 1]
 							if (tempMatch && tempMatch.teams) {
 								let winnerTeam = ''
 								if (tempMatch.teams.teamOneScore > tempMatch.teams.teamTwoScore) {
@@ -204,10 +204,10 @@ let matchService = {
 						}
 					}
 
-					let existingTeams = []
+					const existingTeams = []
 					if (lastMatchs && lastMatchs.length > 0) {
 						// BUILD DEFAULT
-						for (let match of lastMatchs) {
+						for (const match of lastMatchs) {
 							if (!existingTeams.includes(match.teamOneName)) {
 								existingTeams.push(match.teamOneName)
 								processedTeams[match.teamOneName] = {
@@ -230,7 +230,7 @@ let matchService = {
 						}
 
 						// SET DATA
-						for (let match of lastMatchs) {
+						for (const match of lastMatchs) {
 							if (processedTeams[match.teamOneName]) {
 								if (match.winner === match.teamOneName) {
 									processedTeams[match.teamOneName].wins = processedTeams[match.teamOneName].wins + 1

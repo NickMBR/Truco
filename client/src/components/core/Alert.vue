@@ -96,17 +96,17 @@ export default {
 		},
 		buildAlert(val) {
 			if (val) {
-				for (let alert of AlertMessages) {
+				for (const alert of AlertMessages) {
 					if (alert.id === val) {
 						if (alert.description) {
 							// SET DEFAULT DATA
-							let cloneAlert = { ...alert }
-							let alertDescription = this.$t(alert.description)
-							let alertContent = this.$store.getters.alertContent
+							const cloneAlert = { ...alert }
+							const alertDescription = this.$t(alert.description)
+							const alertContent = this.$store.getters.alertContent
 
 							// FORMAT THE ALERT
 							if (alertDescription.toString().includes('§') && !this.$utils.isEmpty(alertContent)) {
-								let formattedAlert = this.formatAlert(val, alertDescription, alertContent)
+								const formattedAlert = this.formatAlert(val, alertDescription, alertContent)
 								cloneAlert.description = formattedAlert
 							}
 							else {

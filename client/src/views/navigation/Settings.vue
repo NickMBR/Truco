@@ -23,34 +23,41 @@
 							</v-col>
 							<v-col cols="8" class="mt-3">
 								<v-select v-model="theme" class="py-0" :items="themes" solo hide-details return-object single-line menu-props="offsetY">
-									<template v-slot:item="{ item, index }">
+									<template v-slot:item="{ item }">
 										<span>{{ $t(item.value) }}</span>
 									</template>
-									<template v-slot:selection="{ item, index }">
+									<template v-slot:selection="{ item }">
 										<span>{{ $t(item.value) }}</span>
 									</template>
 								</v-select>
 							</v-col>
 
-							<v-col cols="4" class="mt-3">
-								<v-subheader>{{ $t('forms.darkMode') }}</v-subheader>
-							</v-col>
-							<v-col cols="8">
-								<v-switch hide-details class="pt-2" color="primary" v-model="darkMode"></v-switch>
+							<v-col cols="12">
+								<v-divider class="my-5"></v-divider>
 							</v-col>
 
-							<v-col cols="4" class="mt-3">
-								<v-subheader>{{ $t('forms.showMatchHistory') }}</v-subheader>
-							</v-col>
-							<v-col cols="8">
-								<v-switch hide-details class="pt-2" color="primary" v-model="showMatchHistory"></v-switch>
+							<v-col cols="12" class="pl-5">
+								<v-switch hide-details inset color="primary" v-model="darkMode">
+									<template v-slot:label>
+										<span class="pl-3 body-2">{{ $t('forms.darkMode') }}</span>
+									</template>
+								</v-switch>
 							</v-col>
 
-							<v-col cols="4" class="mt-3">
-								<v-subheader>{{ $t('forms.keepTeamNames') }}</v-subheader>
+							<v-col cols="12" class="pl-5">
+								<v-switch hide-details inset class="pt-3" color="primary" v-model="showMatchHistory">
+									<template v-slot:label>
+										<span class="pl-3 body-2">{{ $t('forms.showMatchHistory') }}</span>
+									</template>
+								</v-switch>
 							</v-col>
-							<v-col cols="8">
-								<v-switch hide-details class="pt-2" color="primary" v-model="keepNames"></v-switch>
+
+							<v-col cols="12" class="pl-5">
+								<v-switch hide-details inset class="pt-3" color="primary" v-model="keepNames">
+									<template v-slot:label>
+										<span class="pl-3 body-2">{{ $t('forms.keepTeamNames') }}</span>
+									</template>
+								</v-switch>
 							</v-col>
 						</v-row>
 					</v-col>
@@ -122,10 +129,10 @@ export default {
 	},
 	methods: {
 		async getSettings() {
-			let localSettings = await SettingsService.getSettings()
+			const localSettings = await SettingsService.getSettings()
 			if (localSettings && localSettings.author) {
 				if (localSettings.language) {
-					for (let language of this.languages) {
+					for (const language of this.languages) {
 						if (language.id === localSettings.language) {
 							this.language = language
 						}
@@ -133,7 +140,7 @@ export default {
 				}
 
 				if (localSettings.theme) {
-					for (let theme of this.themes) {
+					for (const theme of this.themes) {
 						if (theme.id === localSettings.theme) {
 							this.theme = theme
 						}

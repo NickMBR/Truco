@@ -28,7 +28,7 @@ const utilities = {
 	},
 	format(source, args) {
 		const canFormat = source.search('§')
-		let sourceArgs = args || []
+		const sourceArgs = args || []
 
 		if (canFormat !== -1 && sourceArgs.length > 0) {
 			let argIndex = -1
@@ -47,7 +47,7 @@ const utilities = {
 	},
 	formatLength(source, length, shouldAddDots) {
 		if (!this.isEmpty(source)) {
-			let data = source.toString()
+			const data = source.toString()
 			return data.length > length ? `${data.substring(0, length)}${shouldAddDots ? '..' : ''}` : data
 		}
 		else {

@@ -19,12 +19,18 @@ export default {
 	},
 	mounted() {
 		this.getSettings()
+		this.requestWakeLock()
 	},
 	methods: {
 		setTitle() {
 			if (!this.routeBlacklist.includes(this.$route.meta.title)) {
 				if (this.$route.meta && this.$route.meta.title) {
-					document.title = 'Truco - ' + this.$route.meta.title
+					if (this.$route.meta.translate) {
+						document.title = this.$t(this.$route.meta.title) + ' - Truco'
+					}
+					else {
+						document.title = this.$route.meta.title + ' - Truco'
+					}
 				}
 				else {
 					document.title = 'Truco'
@@ -32,7 +38,7 @@ export default {
 			}
 		},
 		async getSettings() {
-			let localSettings = await SettingsService.getSettings()
+			const localSettings = await SettingsService.getSettings()
 			if (localSettings && localSettings.author) {
 				if (localSettings.language) {
 					this.$i18n.locale = localSettings.language
@@ -89,6 +95,19 @@ export default {
 			}
 
 			this.$store.commit('updateColorMode', { darkMode: this.$vuetify.theme.dark, theme: theme })
+		},
+		requestWakeLock() {
+			if ('keepAwake' in screen) {
+				screen.keepAwake = true
+			}
+			else if ('wakeLock' in navigator) {
+				navigator.wakeLock.request('screen').then(wakeLock => {
+					// WAKELOCK ACTIVE
+				}).catch(() => {})
+			}
+			else {
+				// WAKELOCK NOT SUPPORTED
+			}
 		}
 	},
 	watch: {
@@ -110,19 +129,19 @@ export default {
 }*/
 
 ::-webkit-scrollbar {
-  width: 8px;
+	width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+	background: #f1f1f1;
 }
- 
+
 ::-webkit-scrollbar-thumb {
-  background: #181A1C; 
+	background: #181A1C;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #282A2E; 
+	background: #282A2E;
 }
 
 .v-sheet--offset {

@@ -9,7 +9,7 @@ function checkCacheExpiration(expireTime) {
 function removeCache(name) {
 	return new Promise((resolve, reject) => {
 		if (name) {
-			localforage.setDriver([ localforage.INDEXEDDB, localforage.WEBSQL, localforage.LOCALSTORAGE ]).then(() => {
+			localforage.setDriver([localforage.INDEXEDDB, localforage.WEBSQL, localforage.LOCALSTORAGE]).then(() => {
 				localforage.removeItem(name).then(() => {
 					resolve()
 				}).catch(error => {
@@ -28,8 +28,8 @@ function removeCache(name) {
 function setCache(name, value, expireTime) {
 	return new Promise((resolve, reject) => {
 		if (name && value) {
-			localforage.setDriver([ localforage.INDEXEDDB, localforage.WEBSQL, localforage.LOCALSTORAGE ]).then(() => {
-				let cache = {
+			localforage.setDriver([localforage.INDEXEDDB, localforage.WEBSQL, localforage.LOCALSTORAGE]).then(() => {
+				const cache = {
 					content: value,
 					expires: expireTime ? (new Date().getTime()) + (60000 * expireTime) : null
 				}
@@ -52,7 +52,7 @@ function setCache(name, value, expireTime) {
 function getCache(name) {
 	return new Promise((resolve, reject) => {
 		if (name) {
-			localforage.setDriver([ localforage.INDEXEDDB, localforage.WEBSQL, localforage.LOCALSTORAGE ]).then(() => {
+			localforage.setDriver([localforage.INDEXEDDB, localforage.WEBSQL, localforage.LOCALSTORAGE]).then(() => {
 				localforage.getItem(name).then(result => {
 					if (result && result.content) {
 						if (result.expires) {
