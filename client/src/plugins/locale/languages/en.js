@@ -63,7 +63,8 @@ export default {
 		cancel: 'Cancel',
 		edit: 'Edit',
 		search: 'Search',
-		confirm: 'Confirm'
+		confirm: 'Confirm',
+		undo: 'Undo'
 	},
 	forms: {
 		language: 'Language',

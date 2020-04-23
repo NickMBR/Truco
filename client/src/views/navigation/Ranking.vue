@@ -62,7 +62,17 @@ export default {
 		laodMatchHistory() {
 			matchService.processMatchTeams().then(result => {
 				if (result && Object.keys(result) && Object.keys(result).length > 0) {
-					this.processedTeams = result
+					let orderedTeams = []
+					for (const team of Object.keys(result)) {
+						result[team].ratio = (Number(result[team].wins) / (Number(result[team].losses) === 0 ? 1 : Number(result[team].losses))).toFixed(2)
+						orderedTeams.push(result[team])
+					}
+
+					orderedTeams = orderedTeams.sort((a, b) => {
+						return b.ratio - a.ratio
+					})
+
+					this.processedTeams = orderedTeams
 				}
 			}).catch(() => {})
 		},

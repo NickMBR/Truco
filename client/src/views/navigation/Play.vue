@@ -63,15 +63,14 @@
 							</v-col>
 
 							<v-col sm="12" cols="12" class="mt-12" v-if="matchHistory && matchHistory.length > 0">
-								<v-btn large icon @click="undoScore()"><v-icon>mdi-undo</v-icon></v-btn>
-								<v-btn large icon @click="redoScore()" :disabled="!enableRedo"><v-icon>mdi-redo</v-icon></v-btn>
+								<v-btn large rounded @click="undoScore()">{{ $t('actions.undo') }}</v-btn>
 							</v-col>
 
-							<v-col sm="12" cols="12" class="mt-12" v-if="matchHistory && matchHistory.length > 0 && showMatchHistory">
+							<v-col sm="12" cols="12" class="mt-12" v-if="matchHistory && matchHistory.length > 1 && showMatchHistory">
 								<p class="caption grey--text">{{ $t('common.history') }}</p>
 								<template v-for="(history, index) in matchHistory" class="mt-5">
 									<p :key="index" class="caption grey--text mb-0">
-										<template v-if="history.type === 'SCORE'">
+										<template v-if="history.type === 'SCORE' && history.pointsAdded > 0">
 											{{ `${history.teamName} ${$t('common.scored')} ${history.pointsAdded} ${history.pointsAdded > 1 ? $t('common.points') : $t('common.point')}` }}
 										</template>
 										<template v-if="history.type === 'NAME'">
@@ -165,8 +164,7 @@ export default {
 
 			// HISTORY
 			matchHistory: [],
-			matchHistoryHeader: 0,
-			enableRedo: true,
+			matchHistoryPointer: -1,
 
 			// TEAM SCORES HISTORY
 			matchTeamsHistory: [],
@@ -267,6 +265,7 @@ export default {
 			}
 
 			// SET HISTORY
+			this.matchHistoryPointer++
 			this.matchHistory.push({
 				id: Math.random().toString(36).substr(2, 8).toUpperCase(),
 				type: 'SCORE',
@@ -277,7 +276,7 @@ export default {
 				teamOldScore: Number(val),
 				teamNewScore: totalScore >= 12 ? 12 : totalScore,
 				pointsAdded: Number(this.formatScoreMode(this.toggleScoreMode)),
-				matchHistoryHeader: this.matchHistoryHeader,
+				matchHistoryPointer: this.matchHistoryPointer,
 				teams: {
 					teamOneName: this.teamOneName,
 					teamOneScore: this.teamOneScore,
@@ -319,26 +318,6 @@ export default {
 				}
 
 				if (hasChanges) {
-					// SET HISTORY
-					this.matchHistory.push({
-						id: Math.random().toString(36).substr(2, 8).toUpperCase(),
-						type: 'NAME',
-						date: moment().format('YYYY-MM-DD HH:mm'),
-						teamAdded: this.teamChange,
-						teamName: this.teamNameChange,
-						teamOldName: this.teamChange === 'TEAM_ONE' ? this.teamOneName : this.teamTwoName,
-						teamOldScore: null,
-						teamNewScore: null,
-						pointsAdded: null,
-						matchHistoryHeader: this.matchHistoryHeader,
-						teams: {
-							teamOneName: this.teamNameChange || this.teamOneName,
-							teamOneScore: this.teamOneScore,
-							teamTwoName: this.teamNameChange || this.teamTwoName,
-							teamTwoScore: this.teamTwoScore
-						}
-					})
-
 					if (this.teamChange === 'TEAM_ONE') {
 						this.teamOneName = this.teamNameChange
 					}
@@ -347,13 +326,33 @@ export default {
 					}
 
 					this.$nextTick(() => {
+						// SET HISTORY
+						this.matchHistory.push({
+							id: Math.random().toString(36).substr(2, 8).toUpperCase(),
+							type: 'NAME',
+							date: moment().format('YYYY-MM-DD HH:mm'),
+							teamAdded: this.teamChange,
+							teamName: this.teamNameChange,
+							teamOldName: this.teamChange === 'TEAM_ONE' ? this.teamOneName : this.teamTwoName,
+							teamOldScore: null,
+							teamNewScore: null,
+							pointsAdded: null,
+							matchHistoryPointer: this.matchHistoryPointer,
+							teams: {
+								teamOneName: this.teamOneName,
+								teamOneScore: this.teamOneScore,
+								teamTwoName: this.teamTwoName,
+								teamTwoScore: this.teamTwoScore
+							}
+						})
+
 						this.teamChangingName = false
 						this.teamNameChange = ''
 
 						if (this.keepNames) {
 							matchService.saveMatchTeamNames({
-								teamOneName: this.teamNameChange || this.teamOneName,
-								teamTwoName: this.teamNameChange || this.teamTwoName
+								teamOneName: this.teamOneName,
+								teamTwoName: this.teamTwoName
 							}).then(() => {
 								this.loadSavedMatchs()
 							}).catch(() => {})
@@ -439,17 +438,21 @@ export default {
 					this.matchHistory = match
 
 					if (data && data.teams) {
-						this.matchHistoryHeader = data.matchHistoryHeader
+						this.matchHistoryPointer = data.matchHistoryPointer
 
-						if (this.matchHistoryHeader !== 0) {
-							const matchs = this.getMatchPointsHistory()
-							this.setMatchToHistory(matchs[(matchs.length - this.matchHistoryHeader) - 1], 'LOAD')
+						const matchs = this.getMatchPointsHistory()
+						let selectedMatch = []
+						for (const match of matchs) {
+							if (match.matchHistoryPointer === data.matchHistoryPointer) {
+								selectedMatch = match
+							}
 						}
-						else {
-							this.teamOneName = data.teams.teamOneName
-							this.teamOneScore = data.teams.teamOneScore
-							this.teamTwoName = data.teams.teamTwoName
-							this.teamTwoScore = data.teams.teamTwoScore
+
+						if (selectedMatch && selectedMatch.id && selectedMatch.teams) {
+							this.teamOneName = selectedMatch.teams.teamOneName
+							this.teamOneScore = selectedMatch.teams.teamOneScore
+							this.teamTwoName = selectedMatch.teams.teamTwoName
+							this.teamTwoScore = selectedMatch.teams.teamTwoScore
 						}
 
 						this.setDefaultNames()
@@ -525,12 +528,32 @@ export default {
 			this.toggleScoreMode = 0
 			this.teamOneScore = 0
 			this.teamTwoScore = 0
-			this.matchHistoryHeader = 0
+			this.matchHistoryPointer = -1
 			this.teamNameChange = ''
 
 			// REMOVE SAVED MATCH
 			matchService.removeRunningMatch().then(() => {
 				this.setDefaultNames()
+
+				this.matchHistoryPointer++
+				this.matchHistory.push({
+					id: Math.random().toString(36).substr(2, 8).toUpperCase(),
+					type: 'SCORE',
+					date: moment().format('YYYY-MM-DD HH:mm'),
+					teamAdded: 'TEAM_ONE',
+					teamName: this.teamOneName,
+					teamOldName: this.teamOneName,
+					teamOldScore: 0,
+					teamNewScore: 0,
+					pointsAdded: 0,
+					matchHistoryPointer: this.matchHistoryPointer,
+					teams: {
+						teamOneName: this.teamOneName,
+						teamOneScore: this.teamOneScore,
+						teamTwoName: this.teamTwoName,
+						teamTwoScore: this.teamTwoScore
+					}
+				})
 			}).catch(() => {})
 		},
 		getMatchPointsHistory() {
@@ -546,64 +569,53 @@ export default {
 				return pointsHistory
 			}
 		},
-		setMatchToHistory(data, type) {
-			let teamData = ''
-			if (data && data.teamAdded) {
-				teamData = data.teamAdded
-
-				if (teamData === 'TEAM_ONE') {
-					this.teamOneScore = type === 'UNDO' ? data.teamOldScore : data.teamNewScore
-				}
-				else if (teamData === 'TEAM_TWO') {
-					this.teamTwoScore = type === 'UNDO' ? data.teamOldScore : data.teamNewScore
-				}
-
-				// SET HISTORY
-				if (type !== 'LOAD') {
-					this.matchHistory.push({
-						id: Math.random().toString(36).substr(2, 8).toUpperCase(),
-						type: type,
-						date: moment().format('YYYY-MM-DD HH:mm'),
-						teamAdded: teamData,
-						teamName: teamData === 'TEAM_ONE' ? this.teamOneName : this.teamTwoName,
-						teamOldName: teamData === 'TEAM_ONE' ? this.teamOneName : this.teamTwoName,
-						teamOldScore: Number(data.teamOldScore),
-						teamNewScore: Number(data.teamNewScore),
-						pointsAdded: data.pointsAdded,
-						matchHistoryHeader: this.matchHistoryHeader,
-						teams: data.teams
-					})
-				}
-			}
-		},
 		undoScore() {
 			const matchs = this.getMatchPointsHistory()
 			if (matchs && matchs.length > 0) {
-				if (this.matchHistoryHeader < matchs.length) {
-					this.matchHistoryHeader += 1
-				}
-				else {
-					this.matchHistoryHeader = matchs.length
+				this.showMatchHistory = true
+				let selectedMatch = []
+				if (this.matchHistoryPointer > 0) {
+					this.matchHistory.forEach((history, index) => {
+						if (history.type === 'SCORE' && history.matchHistoryPointer === this.matchHistoryPointer) {
+							this.matchHistory.splice(index, 1)
+						}
+					})
+
+					this.matchHistoryPointer--
 				}
 
-				this.setMatchToHistory(matchs[matchs.length - this.matchHistoryHeader], 'UNDO')
-
-				if (this.matchHistoryHeader !== 0) {
-					this.enableRedo = true
+				for (const match of matchs) {
+					if (Number(match.matchHistoryPointer) === Number(this.matchHistoryPointer)) {
+						selectedMatch = match
+					}
 				}
-				else {
-					this.enableRedo = false
+
+				if (selectedMatch && selectedMatch.id && selectedMatch.teams) {
+					this.teamOneScore = selectedMatch.teams.teamOneScore
+					this.teamTwoScore = selectedMatch.teams.teamTwoScore
+
+					this.matchHistory.push({
+						id: Math.random().toString(36).substr(2, 8).toUpperCase(),
+						type: 'UNDO',
+						date: moment().format('YYYY-MM-DD HH:mm'),
+						teamAdded: selectedMatch.teamAdded,
+						teamName: selectedMatch.teamAdded === 'TEAM_ONE' ? this.teamOneName : this.teamTwoName,
+						teamOldName: selectedMatch.teamAdded === 'TEAM_ONE' ? this.teamOneName : this.teamTwoName,
+						teamOldScore: Number(selectedMatch.teamOldScore),
+						teamNewScore: Number(selectedMatch.teamNewScore),
+						pointsAdded: selectedMatch.pointsAdded,
+						matchHistoryPointer: this.matchHistoryPointer,
+						teams: {
+							teamOneName: this.teamOneName,
+							teamOneScore: this.teamOneScore,
+							teamTwoName: this.teamTwoName,
+							teamTwoScore: this.teamTwoScore
+						}
+					})
 				}
 			}
-		},
-		redoScore() {
-			const matchs = this.getMatchPointsHistory()
-			if (matchs && matchs.length > 0) {
-				if (this.matchHistoryHeader > 0) {
-					this.matchHistoryHeader -= 1
-				}
-
-				this.setMatchToHistory(matchs[this.matchHistoryHeader !== 0 ? (matchs.length - this.matchHistoryHeader) - 1 : matchs.length - 1], 'REDO')
+			else {
+				this.showMatchHistory = false
 			}
 		}
 	},

@@ -30,13 +30,14 @@ const matchService = {
 							validMatch = false
 						}
 					}
+
 					if (validMatch) {
 						return cache.setCache('truco-running-match', data, false).catch(error => {
 							throw new Error('CANNOT_SAVE_MATCH, ERROR:', error)
 						})
 					}
 					else {
-						throw new Error('CANNOT_SAVE_MATCH_INVALID_DATA')
+						throw new Error('CANNOT_SAVE_RUNNING_MATCH_INVALID_DATA')
 					}
 				}
 				else {
@@ -117,7 +118,7 @@ const matchService = {
 					}
 				}
 				else {
-					throw new Error('CANNOT_SAVE_MATCH_INVALID_DATA')
+					throw new Error('CANNOT_SAVE_FINISHED_MATCH_INVALID_DATA')
 				}
 			}).then(() => {
 				resolve()
