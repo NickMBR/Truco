@@ -2,6 +2,9 @@
 [Truco Paulista](https://en.wikipedia.org/wiki/Truco#Truco_Paulista) Points/Ranking Manager<br>
 A PWA app made with Vue.js to manage your Truco matches!
 
+## Play
+[https://truco.niko.works/play](https://truco.niko.works/play)
+
 ![TrucoAD](https://i.imgur.com/xYjxKVX.png)
 
 ## Developing
