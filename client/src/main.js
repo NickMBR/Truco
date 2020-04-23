@@ -8,6 +8,7 @@ import './registerServiceWorker'
 // PLUGINS
 import VueI18n from 'vue-i18n'
 import Locales from './plugins/locale'
+import Alerts from './plugins/core/alert'
 import Validator from './plugins/core/validator'
 import Utilities from './plugins/core/utils'
 import EventBus from './plugins/core/eventbus'
@@ -59,6 +60,9 @@ Vue.use(Utilities, i18n)
 
 // EVENTBUS
 Vue.use(EventBus)
+
+// ALERTS
+Vue.use(Alerts)
 
 new Vue({
 	vuetify: new Vuetify(VuetifyOptions),

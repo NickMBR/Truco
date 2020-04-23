@@ -6,7 +6,7 @@
 			<v-spacer></v-spacer>
 
 			<v-btn icon color="primary" v-if="$route.path === '/play'">
-				<v-icon @click="$store.dispatch('setAlert', { alert: 'RESET_SCORE', data: [] })">mdi-history</v-icon>
+				<v-icon @click="$alert('RESET_SCORE')">mdi-history</v-icon>
 			</v-btn>
 		</v-app-bar>
 
@@ -33,17 +33,17 @@
 			</v-slide-y-transition>
 		</v-content>
 
-		<dt-alert :message="alertMessage"></dt-alert>
+		<truco-alert></truco-alert>
 	</v-app>
 </template>
 
 <script>
 import backgroundPicture from '../assets/img/dt_bg.jpg'
-import Alert from '../components/core/Alert'
+import TrucoAlert from '../components/core/alert/Alert'
 
 export default {
 	components: {
-		'dt-alert': Alert
+		'truco-alert': TrucoAlert
 	},
 	data() {
 		return {
@@ -52,7 +52,6 @@ export default {
 			bgPhoto: backgroundPicture,
 			menu: null,
 			mini: false,
-			alertMessage: '',
 			menuItem: 0,
 			menuItems: [
 				{
@@ -87,9 +86,6 @@ export default {
 		this.processMenuSelected()
 	},
 	computed: {
-		alert() {
-			return this.$store.getters.alert
-		},
 		themeGradient() {
 			return this.$store.getters.themeGradient
 		}
@@ -120,9 +116,6 @@ export default {
 		}
 	},
 	watch: {
-		'$store.getters.alert'() {
-			this.alertMessage = this.$store.getters.alert
-		},
 		'$route.path'() {
 			this.processMenuSelected()
 		}

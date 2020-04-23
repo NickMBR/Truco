@@ -8,34 +8,14 @@ const alerts = [
 			{
 				type: 'success',
 				title: 'common.yes',
-				action: 'RESET_MATCH'
+				action: 'RESET_MATCH',
+				dark: false
 			},
 			{
 				type: 'red darken-2',
 				title: 'common.no',
-				action: 'CLOSE_ALERT'
-			}
-		],
-		options: {
-			persistent: true,
-			width: 400
-		}
-	},
-	{
-		id: 'SAVE_MATCH',
-		type: 'DANGER',
-		title: 'actions.confirm',
-		description: 'alerts.game.save',
-		buttons: [
-			{
-				type: 'success',
-				title: 'common.yes',
-				action: 'SAVE_MATCH'
-			},
-			{
-				type: 'red darken-2',
-				title: 'common.no',
-				action: 'CLOSE_ALERT'
+				action: 'CLOSE_ALERT',
+				dark: false
 			}
 		],
 		options: {
@@ -52,7 +32,8 @@ const alerts = [
 			{
 				type: 'success',
 				title: 'common.ok',
-				action: 'SAVE_AND_RESET_MATCH'
+				action: 'SAVE_AND_RESET_MATCH',
+				dark: false
 			}
 		],
 		options: {

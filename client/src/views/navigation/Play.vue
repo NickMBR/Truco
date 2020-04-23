@@ -63,10 +63,10 @@
 							</v-col>
 
 							<v-col sm="12" cols="12" class="mt-12" v-if="matchHistory && matchHistory.length > 0">
-								<v-btn large rounded @click="undoScore()">{{ $t('actions.undo') }}</v-btn>
+								<v-btn large rounded :disabled="disableUndo" @click="undoScore()">{{ $t('actions.undo') }}</v-btn>
 							</v-col>
 
-							<v-col sm="12" cols="12" class="mt-12" v-if="matchHistory && matchHistory.length > 1 && showMatchHistory">
+							<v-col sm="12" cols="12" class="mt-12" v-if="showMatchHistory && processHistoryDisplay()">
 								<p class="caption grey--text">{{ $t('common.history') }}</p>
 								<template v-for="(history, index) in matchHistory" class="mt-5">
 									<p :key="index" class="caption grey--text mb-0">
@@ -87,11 +87,9 @@
 
 		<v-dialog v-model="teamChangingName" persistent max-width="400">
 			<v-card flat>
-				<v-toolbar dense class="primary">
-					<v-toolbar-title>
-						{{ $t('forms.teamName') }}
-					</v-toolbar-title>
-				</v-toolbar>
+				<v-card-title>
+					{{ $t('forms.teamName') }}
+				</v-card-title>
 
 				<v-card-text class="py-12 px-4 text-center">
 					<v-form @submit.prevent="validateName" ref="nameForm">
@@ -102,8 +100,8 @@
 				<v-card-actions class="pa-4">
 					<v-spacer></v-spacer>
 
-					<v-btn dark color="primary" @click="validateName()">{{ $t('actions.save') }}</v-btn>
-					<v-btn dark color="" @click="teamChangingName = false">{{ $t('actions.cancel') }}</v-btn>
+					<v-btn :class="$store.getters.colorMode ? 'grey--text text--darken-4' : 'white--text'" color="primary" @click="validateName()">{{ $t('actions.save') }}</v-btn>
+					<v-btn class="" color="" @click="teamChangingName = false">{{ $t('actions.cancel') }}</v-btn>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -163,6 +161,7 @@ export default {
 			teamTwoScore: 0,
 
 			// HISTORY
+			disableUndo: true,
 			matchHistory: [],
 			matchHistoryPointer: -1,
 
@@ -186,9 +185,20 @@ export default {
 		window.addEventListener('beforeunload', this.saveRunningMatch)
 	},
 	mounted() {
+		this.$bus.$on('RESET_MATCH', () => {
+			this.resetMatch()
+		})
+		this.$bus.$on('SAVE_AND_RESET_MATCH', () => {
+			matchService.saveFinishedMatch(this.matchHistory).then(() => {
+				this.resetMatch()
+			}).catch(() => {})
+		})
+
 		this.loadTemporaryMatch()
 	},
 	beforeDestroy() {
+		this.$bus.$off('RESET_MATCH')
+		this.$bus.$off('SAVE_AND_RESET_MATCH')
 		window.removeEventListener('beforeunload', this.saveRunningMatch)
 		this.saveRunningMatch()
 	},
@@ -249,7 +259,7 @@ export default {
 						this.teamTwoScore = 12
 					}
 
-					this.$store.dispatch('setAlert', { alert: 'MATCH_WINNER', data: this.getWinnerTeam(this.winnerTeam) })
+					this.$alert('MATCH_WINNER', this.getWinnerTeam(this.winnerTeam))
 				}
 				else {
 					if (team === 'TEAM_ONE') {
@@ -261,7 +271,7 @@ export default {
 				}
 			}
 			else {
-				this.$store.dispatch('setAlert', { alert: 'MATCH_WINNER', data: this.getWinnerTeam(this.winnerTeam) })
+				this.$alert('MATCH_WINNER', this.getWinnerTeam(this.winnerTeam))
 			}
 
 			// SET HISTORY
@@ -466,6 +476,29 @@ export default {
 				this.setDefaultNames()
 			})
 		},
+		processHistoryDisplay() {
+			const matchScores = this.getMatchPointsHistory()
+			const ammount = []
+			for (const match of this.matchHistory) {
+				if (match.type === 'SCORE' || match.type === 'NAME') {
+					ammount.push(match)
+				}
+			}
+
+			if (matchScores && matchScores.length > 1) {
+				this.disableUndo = false
+			}
+			else {
+				this.disableUndo = true
+			}
+
+			if (ammount && ammount.length > 1) {
+				return true
+			}
+			else {
+				return false
+			}
+		},
 		loadSavedMatchs() {
 			this.teamOneBadge = false
 			this.teamTwoBadge = false
@@ -577,62 +610,46 @@ export default {
 				if (this.matchHistoryPointer > 0) {
 					this.matchHistory.forEach((history, index) => {
 						if (history.type === 'SCORE' && history.matchHistoryPointer === this.matchHistoryPointer) {
+							console.log('SHOULD REMOVE')
 							this.matchHistory.splice(index, 1)
 						}
 					})
 
 					this.matchHistoryPointer--
-				}
 
-				for (const match of matchs) {
-					if (Number(match.matchHistoryPointer) === Number(this.matchHistoryPointer)) {
-						selectedMatch = match
-					}
-				}
-
-				if (selectedMatch && selectedMatch.id && selectedMatch.teams) {
-					this.teamOneScore = selectedMatch.teams.teamOneScore
-					this.teamTwoScore = selectedMatch.teams.teamTwoScore
-
-					this.matchHistory.push({
-						id: Math.random().toString(36).substr(2, 8).toUpperCase(),
-						type: 'UNDO',
-						date: moment().format('YYYY-MM-DD HH:mm'),
-						teamAdded: selectedMatch.teamAdded,
-						teamName: selectedMatch.teamAdded === 'TEAM_ONE' ? this.teamOneName : this.teamTwoName,
-						teamOldName: selectedMatch.teamAdded === 'TEAM_ONE' ? this.teamOneName : this.teamTwoName,
-						teamOldScore: Number(selectedMatch.teamOldScore),
-						teamNewScore: Number(selectedMatch.teamNewScore),
-						pointsAdded: selectedMatch.pointsAdded,
-						matchHistoryPointer: this.matchHistoryPointer,
-						teams: {
-							teamOneName: this.teamOneName,
-							teamOneScore: this.teamOneScore,
-							teamTwoName: this.teamTwoName,
-							teamTwoScore: this.teamTwoScore
+					for (const match of matchs) {
+						if (Number(match.matchHistoryPointer) === Number(this.matchHistoryPointer)) {
+							selectedMatch = match
 						}
-					})
+					}
+
+					if (selectedMatch && selectedMatch.id && selectedMatch.teams) {
+						this.teamOneScore = selectedMatch.teams.teamOneScore
+						this.teamTwoScore = selectedMatch.teams.teamTwoScore
+
+						this.matchHistory.push({
+							id: Math.random().toString(36).substr(2, 8).toUpperCase(),
+							type: 'UNDO',
+							date: moment().format('YYYY-MM-DD HH:mm'),
+							teamAdded: selectedMatch.teamAdded,
+							teamName: selectedMatch.teamAdded === 'TEAM_ONE' ? this.teamOneName : this.teamTwoName,
+							teamOldName: selectedMatch.teamAdded === 'TEAM_ONE' ? this.teamOneName : this.teamTwoName,
+							teamOldScore: Number(selectedMatch.teamOldScore),
+							teamNewScore: Number(selectedMatch.teamNewScore),
+							pointsAdded: selectedMatch.pointsAdded,
+							matchHistoryPointer: this.matchHistoryPointer,
+							teams: {
+								teamOneName: this.teamOneName,
+								teamOneScore: this.teamOneScore,
+								teamTwoName: this.teamTwoName,
+								teamTwoScore: this.teamTwoScore
+							}
+						})
+					}
 				}
 			}
 			else {
 				this.showMatchHistory = false
-			}
-		}
-	},
-	watch: {
-		'$store.getters.action'() {
-			if (this.$store.getters.action === 'RESET_MATCH') {
-				this.resetMatch()
-				this.$store.dispatch('setAction', '')
-			}
-			else if (this.$store.getters.action === 'SAVE_MATCH') {
-				this.$store.dispatch('setAction', '')
-			}
-			else if (this.$store.getters.action === 'SAVE_AND_RESET_MATCH') {
-				matchService.saveFinishedMatch(this.matchHistory).then(() => {
-					this.resetMatch()
-					this.$store.dispatch('setAction', '')
-				}).catch(() => {})
 			}
 		}
 	}

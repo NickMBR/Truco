@@ -32,7 +32,7 @@
 							</v-col>
 
 							<v-col cols="12" class="mt-12">
-								<p class="grey--text caption mb-0">{{ 'v1.1.0' }}</p>
+								<p class="grey--text caption mb-0">{{ 'v1.2.0' }}</p>
 							</v-col>
 						</v-row>
 					</v-col>
