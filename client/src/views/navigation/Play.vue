@@ -95,13 +95,12 @@
 
 		<v-dialog v-model="teamChangingName" persistent max-width="400">
 			<v-card flat>
-				<v-card-title>
+				<v-card-title class="pt-5">
 					{{ $t('forms.teamName') }}
 				</v-card-title>
 
-				<v-card-text class="py-12 px-4 text-center">
+				<v-card-text class="py-5 px-4 text-center">
 					<v-text-field ref="changeNameField" outlined :label="$t('forms.teamName')" v-model="teamNameChange" @input.native="e => teamNameChange = e.target.value" @keyup.enter="validateName()" maxlength="25" :rules="[$rules.required, $rules.alphaNumeric]" autocomplete="off"></v-text-field>
-					{{ teamNameChange }}
 				</v-card-text>
 
 				<v-card-actions class="pa-4">
@@ -415,13 +414,6 @@ export default {
 				}
 
 				if (hasChanges) {
-					if (this.teamChange === 'TEAM_ONE') {
-						this.teamOneName = this.teamNameChange
-					}
-					else if (this.teamChange === 'TEAM_TWO') {
-						this.teamTwoName = this.teamNameChange
-					}
-
 					this.$nextTick(() => {
 						// SET HISTORY
 						this.matchHistory.push({
@@ -438,12 +430,19 @@ export default {
 							onElevenHand: this.onElevenHand,
 							onIronHand: this.onIronHand,
 							teams: {
-								teamOneName: this.teamOneName,
+								teamOneName: this.teamChange === 'TEAM_ONE' ? this.teamNameChange : this.teamOneName,
 								teamOneScore: this.teamOneScore,
-								teamTwoName: this.teamTwoName,
+								teamTwoName: this.teamChange === 'TEAM_TWO' ? this.teamNameChange : this.teamTwoName,
 								teamTwoScore: this.teamTwoScore
 							}
 						})
+
+						if (this.teamChange === 'TEAM_ONE') {
+							this.teamOneName = this.teamNameChange
+						}
+						else if (this.teamChange === 'TEAM_TWO') {
+							this.teamTwoName = this.teamNameChange
+						}
 
 						this.teamChangingName = false
 						this.teamNameChange = ''

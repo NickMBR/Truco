@@ -33,7 +33,7 @@
 							</v-col>
 
 							<v-col cols="12">
-								<v-divider class="my-5"></v-divider>
+								<v-divider class="mt-5"></v-divider>
 							</v-col>
 
 							<v-col cols="12" class="pl-5">
