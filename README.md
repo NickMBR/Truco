@@ -5,7 +5,7 @@ A PWA app made with Vue.js to manage your Truco matches!
 ## Play
 [https://truco.niko.works/play](https://truco.niko.works/play)
 
-![TrucoAD](https://i.imgur.com/xYjxKVX.png)
+![TrucoAD](https://i.imgur.com/LEQY6jG.png)
 
 ## Developing
 Download or clone this repository<br>
