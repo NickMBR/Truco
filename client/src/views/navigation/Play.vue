@@ -36,7 +36,7 @@
 				<v-row no-gutters align="center" justify="center" class="text-center">
 					<v-col sm="12" class="pa-5 text-center">
 						<v-row no-gutters class="noselect text-no-wrap">
-							<v-col sm="5" cols="5" @click="changeName('TEAM_ONE', true)" style="cursor: pointer;">
+							<v-col sm="5" cols="5" @click="changeName('TEAM_ONE')" style="cursor: pointer;">
 								<v-badge v-model="teamOneBadge" class="align-self-center" color="primary">
 									<template v-slot:badge>
 										<span :class="$store.getters.colorMode ? 'grey--text text--darken-4' : 'white--text'"><strong>{{ teamOneBadgeScore }}</strong></span>
@@ -47,7 +47,7 @@
 							<v-col sm="2" cols="2">
 								<p class="mb-0 truco-font" :class="$vuetify.breakpoint.mdAndUp ? 'sz-title-2' : 'sz-title-05'">vs</p>
 							</v-col>
-							<v-col sm="5" cols="5" @click="changeName('TEAM_TWO', true)" style="cursor: pointer;">
+							<v-col sm="5" cols="5" @click="changeName('TEAM_TWO')" style="cursor: pointer;">
 								<v-badge v-model="teamTwoBadge" class="align-self-center" color="primary">
 									<template v-slot:badge>
 										<span :class="$store.getters.colorMode ? 'grey--text text--darken-4' : 'white--text'"><strong>{{ teamTwoBadgeScore }}</strong></span>
@@ -94,24 +94,23 @@
 		</v-row>
 
 		<v-dialog v-model="teamChangingName" persistent max-width="400">
-			<v-form @submit.prevent="validateName" @keyup.enter="validateName" ref="nameForm">
-				<v-card flat>
-					<v-card-title>
-						{{ $t('forms.teamName') }}
-					</v-card-title>
+			<v-card flat>
+				<v-card-title>
+					{{ $t('forms.teamName') }}
+				</v-card-title>
 
-					<v-card-text class="py-12 px-4 text-center">
-						<v-text-field outlined :label="$t('forms.teamName')" v-model="teamNameChange" maxlength="25" :rules="[$rules.required, $rules.alphaNumeric]"></v-text-field>
-					</v-card-text>
+				<v-card-text class="py-12 px-4 text-center">
+					<v-text-field ref="changeNameField" outlined :label="$t('forms.teamName')" v-model="teamNameChange" @input.native="e => teamNameChange = e.target.value" @keyup.enter="validateName()" maxlength="25" :rules="[$rules.required, $rules.alphaNumeric]" autocomplete="off"></v-text-field>
+					{{ teamNameChange }}
+				</v-card-text>
 
-					<v-card-actions class="pa-4">
-						<v-spacer></v-spacer>
+				<v-card-actions class="pa-4">
+					<v-spacer></v-spacer>
 
-						<v-btn :class="$store.getters.colorMode ? 'grey--text text--darken-4' : 'white--text'" color="primary" @click="validateName()">{{ $t('actions.save') }}</v-btn>
-						<v-btn class="" color="" @click="teamChangingName = false">{{ $t('actions.cancel') }}</v-btn>
-					</v-card-actions>
-				</v-card>
-			</v-form>
+					<v-btn :class="$store.getters.colorMode ? 'grey--text text--darken-4' : 'white--text'" color="primary" @click="validateName()">{{ $t('actions.save') }}</v-btn>
+					<v-btn class="" color="" @click="teamChangingName = false">{{ $t('actions.cancel') }}</v-btn>
+				</v-card-actions>
+			</v-card>
 		</v-dialog>
 	</v-container>
 </template>
@@ -391,20 +390,17 @@ export default {
 				this.toggleScoreMode = 0
 			}
 		},
-		changeName(team, shouldEdit) {
-			if (team === 'TEAM_ONE') {
-				this.teamChange = team
-				this.teamNameChange = this.teamOneName
-			}
-			else if (team === 'TEAM_TWO') {
-				this.teamChange = team
-				this.teamNameChange = this.teamTwoName
-			}
-
+		changeName(team) {
+			this.teamChange = team
+			this.teamNameChange = ''
 			this.teamChangingName = true
+
+			this.$nextTick(() => {
+				this.$refs.changeNameField.resetValidation()
+			})
 		},
 		validateName() {
-			if (this.$refs.nameForm.validate() && !this.$utils.isEmpty(this.teamNameChange)) {
+			if (this.$refs.changeNameField.validate() && !this.$utils.isEmpty(this.teamNameChange) && !this.$utils.isEmpty(this.teamChange)) {
 				// CHECK CHANGES
 				let hasChanges = false
 				if (this.teamChange === 'TEAM_ONE') {
