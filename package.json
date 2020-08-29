@@ -1,6 +1,6 @@
 {
   "name": "truco",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "private": true,
   "author": "Nicolas Mello <nicolasmello@gmail.com> (https://niko.works)",
   "scripts": {
@@ -11,20 +11,20 @@
   "dependencies": {
     "@mdi/font": "^3.5.95",
     "core-js": "^3.6.5",
-    "localforage": "^1.7.3",
+    "localforage": "^1.9.0",
     "moment": "^2.24.0",
     "register-service-worker": "^1.7.1",
     "typeface-roboto": "0.0.75",
-    "vue": "^2.6.11",
+    "vue": "^2.6.12",
     "vue-i18n": "^8.17.3",
-    "vue-router": "^3.1.6",
+    "vue-router": "^3.4.3",
     "vuetify": "^2.2.23",
-    "vuex": "^3.2.0"
+    "vuex": "^3.5.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-eslint": "^4.3.1",
-    "@vue/cli-plugin-pwa": "^4.3.1",
-    "@vue/cli-service": "^4.3.1",
+    "@vue/cli-plugin-eslint": "^4.5.4",
+    "@vue/cli-plugin-pwa": "^4.5.4",
+    "@vue/cli-service": "^4.5.4",
     "@vue/eslint-config-standard": "^5.1.2",
     "babel-plugin-transform-imports": "^2.0.0",
     "eslint": "^6.8.0",
@@ -33,8 +33,8 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-vue": "^6.2.2",
-    "stylus": "^0.54.7",
+    "stylus": "^0.54.8",
     "stylus-loader": "^3.0.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.12"
   }
 }
