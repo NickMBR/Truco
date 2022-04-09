@@ -12,7 +12,7 @@
     "@mdi/font": "^3.5.95",
     "core-js": "^3.6.5",
     "localforage": "^1.9.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "register-service-worker": "^1.7.1",
     "typeface-roboto": "0.0.75",
     "vue": "^2.6.12",
